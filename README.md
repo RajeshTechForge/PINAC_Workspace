@@ -1,3 +1,12 @@
+
+> [!WARNING]
+> This repository has been archived and is no longer actively maintained. The code remains available for reference purposes, but no further updates, bug fixes, or pull requests will be accepted.
+> 
+>Feel free to fork this project if you'd like to continue development.
+
+<br>
+<br>
+
 <div align="center">
 
 <img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/header_2.png" alt="header image">
