@@ -2,7 +2,12 @@
 > [!WARNING]
 > This repository has been archived and is no longer actively maintained. The code remains available for reference purposes, but no further updates, bug fixes, or pull requests will be accepted.
 > 
->Feel free to fork this project if you'd like to continue development.
+> Feel free to fork this project if you'd like to continue development.
+
+<br>
+
+> **🙏 Thank You to All Contributors**  
+> A huge thank you to everyone who contributed ideas, code and reviews to this project. Your time, effort, and support are greatly appreciated and have been essential to the evolution of this repository.
 
 <br>
 <br>
