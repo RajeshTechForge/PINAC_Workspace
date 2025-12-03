@@ -14,8 +14,6 @@
 <br>
 <br>
 
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/pinacai/PINAC_Workspace"/>
-<img alt="Github Last Commit" src="https://img.shields.io/github/last-commit/pinacai/PINAC_Workspace"/>
 <img alt="Github Contributors" src="https://img.shields.io/github/contributors/pinacai/PINAC_Workspace"/>
 <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/pinacai/PINAC_Workspace"/>
 
@@ -52,6 +50,12 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 ## 🗼 System Design
 
 <img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/system_architechture.png" alt="system design">
+
+> [!NOTE]
+> You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repositories:
+> 1. [API Getway & Auth Service](https://github.com/RajeshTechForge/PINAC_Microservices)
+> 2. [Cloud LLMs](https://github.com/RajeshTechForge/pinac-cloud-ai)
+> 3. [AI-powered Web Search](https://github.com/RajeshTechForge/pinac-ai-search)
 
 ## 📂 File Structure
 
