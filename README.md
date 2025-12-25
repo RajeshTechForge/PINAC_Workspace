@@ -57,10 +57,8 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 <img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/system_architechture.png" alt="system design">
 
 > [!NOTE]
-> You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repositories:
-> 1. [API Getway & Auth Service](https://github.com/RajeshTechForge/PINAC_Microservices)
-> 2. [Cloud LLMs](https://github.com/RajeshTechForge/pinac-cloud-ai)
-> 3. [AI-powered Web Search](https://github.com/RajeshTechForge/pinac-ai-search)
+> You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repository:
+> [RajeshTechForge/PINAC_Microservices](https://github.com/RajeshTechForge/PINAC_Microservices)
 
 ## 📂 File Structure
 
