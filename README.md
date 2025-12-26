@@ -14,13 +14,13 @@
 
 <div align="center">
 
-<img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/header_2.png" alt="header image">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/header_2.png" alt="header image">
 
 <br>
 <br>
 
-<img alt="Github Contributors" src="https://img.shields.io/github/contributors/pinacai/PINAC_Workspace"/>
-<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/pinacai/PINAC_Workspace"/>
+<img alt="Github Contributors" src="https://img.shields.io/github/contributors/RajeshTechForge/PINAC_Workspace"/>
+<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/RajeshTechForge/PINAC_Workspace"/>
 
 [![View My Profile](https://img.shields.io/badge/View-My_Profile-blue?logo=GitHub)](https://github.com/rajeshtechforge)
 
@@ -50,11 +50,11 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 
 ## 🛹 UI-Design
 
-<img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/UI-Design.png" alt="app screenshot">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/UI-Design.png" alt="app screenshot">
 
 ## 🗼 System Design
 
-<img src="https://github.com/pinacai/PINAC_Workspace/blob/main/assets/system_architechture.png" alt="system design">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/system_architechture.png" alt="system design">
 
 > [!NOTE]
 > You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repository:
@@ -172,12 +172,12 @@ We highly welcome contributions! Please follow the steps if you're interested.
 
 ## 📄 License
 
-PINAC Workspace is licensed under the **GPL-3.0 license**. See the <a href="https://github.com/pinacai/PINAC_Workspace/blob/main/LICENSE">LICENSE</a> file for more details.
+PINAC Workspace is licensed under the **GPL-3.0 license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/LICENSE">LICENSE</a> file for more details.
 
 ## 🌏 Contributors
 
 Thanks to our contributors, we have received huge support from the open-source community.
 
-<a href="https://github.com/pinacai/PINAC_Workspace/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=pinacai/PINAC_Workspace" />
+<a href="https://github.com/RajeshTechForge/PINAC_Workspace/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=RajeshTechForge/PINAC_Workspace" />
 </a>
