@@ -109,7 +109,7 @@ Overview of File Structure in Brief to Help You Get Started.
 1. Clone the Repository
 
    ```bash
-   git clone https://github.com/pinacai/PINAC_Workspace.git && cd PINAC_Workspace
+   git clone https://github.com/RajeshTechForge/PINAC_Workspace.git && cd PINAC_Workspace
    ```
 
 2. Install Node dependencies
