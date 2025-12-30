@@ -158,7 +158,7 @@ We highly welcome contributions! Please follow the steps if you're interested.
 
 ## 📄 License
 
-PINAC Workspace is licensed under the **GPL-3.0 license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/LICENSE">LICENSE</a> file for more details.
+PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/LICENSE">LICENSE</a> file for more details.
 
 ## 🌏 Contributors
 
