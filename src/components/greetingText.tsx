@@ -60,6 +60,7 @@ export const GreetingText = () => {
 
   useEffect(() => {
     const fetchUserInfo = () => {
+      if (!window.ipcRenderer) return;
       window.ipcRenderer.send("get-user-info");
       window.ipcRenderer.once("backend-response", (_, response) => {
         setFirstName(response.displayName.split(" ")[0]);

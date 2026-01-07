@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBackendPort } from "../utils/backendPort";
+import { getBackendPort, setBackendPort } from "../utils/backendPort";
 
 export const AuthContext = React.createContext<{
   isAuthenticated: boolean;
@@ -10,31 +10,60 @@ export const AuthContext = React.createContext<{
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const backendPort = getBackendPort();
+  const [backendPort, setLocalBackendPort] = useState<number | null>(
+    getBackendPort()
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const checkInitialAuth = async () => {
-    const response = await fetch(
-      `http://localhost:${backendPort}/api/auth/status`
-    );
-    response.json().then((data) => {
+    if (!backendPort) return;
+    try {
+      const response = await fetch(
+        `http://localhost:${backendPort}/api/auth/status`
+      );
+      const data = await response.json();
       setIsAuthenticated(data.authenticated);
-    });
+    } catch (error) {
+      console.error("Failed to check initial auth:", error);
+    }
   };
 
   const logout = async () => {
-    const response = await fetch(
-      `http://localhost:${backendPort}/api/auth/logout`
-    );
-    response.json().then((data) => {
+    if (!backendPort) return;
+    try {
+      const response = await fetch(
+        `http://localhost:${backendPort}/api/auth/logout`
+      );
+      const data = await response.json();
       setIsAuthenticated(data.success);
-    });
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
   };
 
   // checking auth from main process
   useEffect(() => {
-    checkInitialAuth();
-  });
+    const handleBackendPort = (_: any, port: number) => {
+      setLocalBackendPort(port);
+      setBackendPort(port);
+    };
+
+    if (window.ipcRenderer) {
+      window.ipcRenderer.on("backend-port-initial", handleBackendPort);
+    }
+
+    return () => {
+      if (window.ipcRenderer) {
+        window.ipcRenderer.off("backend-port-initial", handleBackendPort);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (backendPort) {
+      checkInitialAuth();
+    }
+  }, [backendPort]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, logout }}>

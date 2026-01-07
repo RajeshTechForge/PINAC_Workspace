@@ -24,10 +24,14 @@ const App = () => {
       setBackendPort(port);
     };
 
-    window.ipcRenderer.on("backend-port-initial", handleBackendPort);
+    if (window.ipcRenderer) {
+      window.ipcRenderer.on("backend-port-initial", handleBackendPort);
+    }
 
     return () => {
-      window.ipcRenderer.off("backend-port-initial", handleBackendPort);
+      if (window.ipcRenderer) {
+        window.ipcRenderer.off("backend-port-initial", handleBackendPort);
+      }
     };
   }, []);
 
@@ -35,6 +39,7 @@ const App = () => {
   useEffect(() => {
     const checkEmbeddingStatus = async () => {
       const port = getBackendPort();
+      if (!port) return;
       try {
         const response = await fetch(
           `http://localhost:${port}/api/rag/default-embedder/status`

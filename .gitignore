@@ -15,7 +15,9 @@ release
 *.local
 
 # python backend
+env
 venv
+.venv
 build
 __pycache__
 resources
@@ -34,6 +36,7 @@ vector_stores
 
 # secret
 .env
+.env.local
 
 #testing
 test.js

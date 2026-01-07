@@ -1,9 +1,18 @@
 {
   "name": "pinac-workspace",
   "version": "2.1.0",
-  "description": "A Must-Have Desktop AI App for Everyone",
-  "author": "RajeshTechForge",
-  "type": "module",
+  "description": "A Privacy-First Desktop AI App for Everyone",
+  "homepage": "https://github.com/RajeshTechForge/PINAC_Workspace#readme",
+  "bugs": {
+    "url": "https://github.com/RajeshTechForge/PINAC_Workspace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RajeshTechForge/PINAC_Workspace.git"
+  },
+  "license": "MIT",
+  "author": "@RajeshTechForge",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

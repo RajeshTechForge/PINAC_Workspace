@@ -63,8 +63,7 @@ Overview of File Structure in Brief to Help You Get Started.
       |   ├── app.py
       |   ├── app.spec
       |   ├── build_app.py
-      |   ├── custom_types.py
-      |   └── requirements.txt
+      |   └── custom_types.py
       |
       └── src/
           ├── App.tsx
@@ -121,17 +120,16 @@ Overview of File Structure in Brief to Help You Get Started.
 3. Create a Python Env for running backend
 
    ```bash
-   cd backend && python -m venv venv
+   cd backend
+   python -m venv venv
    ```
 
 4. Install Python dependencies
 
    ```bash
    # Activate the virtual environment
-   # On Windows:
-   venv\Scripts\activate
    # On macOS/Linux:
-   source venv/bin/activate
+   source venv/bin/activate  # On Windows: env\Scripts\activate
 
    pip install -r requirements.txt
    ```

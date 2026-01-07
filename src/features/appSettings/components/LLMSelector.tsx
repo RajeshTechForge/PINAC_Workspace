@@ -10,6 +10,7 @@ export const LLMSelector: React.FC = () => {
 
   useEffect(() => {
     const fetchOllamaModels = async () => {
+      if (!backendPort) return;
       try {
         const response = await fetch(
           `http://localhost:${backendPort}/api/ollama/models`

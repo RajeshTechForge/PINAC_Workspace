@@ -161,7 +161,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // │ │
 // │ ├─┬ dist-electron
 // │ │ ├── main.js
-// │ │ └── preload.mjs
+// │ │ └── preload.js
 // │
 process.env.APP_ROOT = path.join(__dirname, "..");
 
@@ -214,7 +214,7 @@ const createMainWindow = async () => {
     autoHideMenuBar: true,
     icon: "public/icon/Round App Logo.png",
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs"),
+      preload: path.join(__dirname, "preload.js"),
       sandbox: true,
       contextIsolation: true,
       nodeIntegration: false,
