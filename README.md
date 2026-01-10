@@ -1,12 +1,32 @@
+## Why Development Stopped 🤔 ?
+
+Well, it **SUCKS**! We deserve better. The project structure was inefficient, packed with no standout features, a nightmare to spin up, and a terrible experience for contributors. But from all the love and support I received, _I can't just let it go_! That's why, armed with fresh skills and insights from my downtime, I've decided to launch [**PINAC Workspace 3.0**](https://github.com/RajeshTechForge/pinac_workspace)—built absolutely from scratch with next-gen features and most importantly, the _best developer experience_ imaginable.
+
+Here's what to expect:
+
+- **"Clone, Install, Run"** setup with zero headaches for the backend server
+- Features you'll actually want to use!
+- Killer developer experience powered by the latest tech stacks for frontend **and** backend
+- Fully Docker Compose-ready
+- The sacred legacy of "Privacy" carries on!
+
+The project will keep the same friendly tone as this msg, not **Bullshit**, a repo absolutely for contributors!
+
+<br>
+
+---
+
+<br>
+
 <div align="center">
 
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/header_2.png" alt="header image">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/header_2.png" alt="header image">
 
 <br>
 <br>
 
-<img alt="Github Contributors" src="https://img.shields.io/github/contributors/RajeshTechForge/PINAC_Workspace"/>
-<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/RajeshTechForge/PINAC_Workspace"/>
+<img alt="Github Contributors" src="https://img.shields.io/github/contributors/RajeshTechForge/PINAC_Workspace_2.0"/>
+<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/RajeshTechForge/PINAC_Workspace_2.0"/>
 
 [![View My Profile](https://img.shields.io/badge/View-My_Profile-blue?logo=GitHub)](https://github.com/rajeshtechforge)
 
@@ -36,11 +56,11 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 
 ## 🛹 UI-Design
 
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/UI-Design.png" alt="app screenshot">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/UI-Design.png" alt="app screenshot">
 
 ## 🗼 System Design
 
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/assets/system_architechture.png" alt="system design">
+<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/system_architechture.png" alt="system design">
 
 > [!NOTE]
 > You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repository:
@@ -108,7 +128,7 @@ Overview of File Structure in Brief to Help You Get Started.
 1. Clone the Repository
 
    ```bash
-   git clone https://github.com/RajeshTechForge/PINAC_Workspace.git && cd PINAC_Workspace
+   git clone https://github.com/RajeshTechForge/PINAC_Workspace_2.0.git && cd "PINAC_Workspace_2.0"
    ```
 
 2. Install Node dependencies
@@ -156,12 +176,12 @@ We highly welcome contributions! Please follow the steps if you're interested.
 
 ## 📄 License
 
-PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace/blob/main/LICENSE">LICENSE</a> file for more details.
+PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/LICENSE">LICENSE</a> file for more details.
 
 ## 🌏 Contributors
 
 Thanks to our contributors, we have received huge support from the open-source community.
 
-<a href="https://github.com/RajeshTechForge/PINAC_Workspace/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=RajeshTechForge/PINAC_Workspace" />
+<a href="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=RajeshTechForge/PINAC_Workspace_2.0" />
 </a>
