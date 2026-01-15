@@ -1,23 +1,3 @@
-## Why Development Stopped 🤔 ?
-
-Well, it **SUCKS**! We deserve better. The project structure was inefficient, packed with no standout features, a nightmare to spin up, and a terrible experience for contributors. But from all the love and support I received, _I can't just let it go_! That's why, armed with fresh skills and insights from my downtime, I've decided to launch [**PINAC Workspace 3.0**](https://github.com/RajeshTechForge/pinac_workspace)—built absolutely from scratch with next-gen features and most importantly, the _best developer experience_ imaginable.
-
-Here's what to expect:
-
-- **"Clone, Install, Run"** setup with zero headaches for the backend server
-- Features you'll actually want to use!
-- Killer developer experience powered by the latest tech stacks for frontend **and** backend
-- Fully Docker Compose-ready
-- The sacred legacy of "Privacy" carries on!
-
-The project will keep the same friendly tone as this msg, not **Bullshit**, a repo absolutely for contributors!
-
-<br>
-
----
-
-<br>
-
 <div align="center">
 
 <img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/header_2.png" alt="header image">
