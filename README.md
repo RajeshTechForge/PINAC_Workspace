@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/header_2.png" alt="header image">
+<img src="https://github.com/RajeshTechForge/pinac_workspace/blob/main/assets/header_2.png" alt="header image">
 
 <br>
 <br>
 
-<img alt="Github Contributors" src="https://img.shields.io/github/contributors/RajeshTechForge/PINAC_Workspace_2.0"/>
-<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/RajeshTechForge/PINAC_Workspace_2.0"/>
+<img alt="Github Contributors" src="https://img.shields.io/github/contributors/RajeshTechForge/pinac_workspace"/>
+<img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/RajeshTechForge/pinac_workspace"/>
 
 [![View My Profile](https://img.shields.io/badge/View-My_Profile-blue?logo=GitHub)](https://github.com/rajeshtechforge)
 
@@ -24,123 +24,31 @@ A privacy-first, cross-platform, open-source desktop AI assistant for all
 
 PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamlessly blending Electron-React for a modern user experience with powerfully Python backend. Unlock the full potential of AI with unparalleled simplicity and user-friendliness, while enjoying ultimate freedom and privacy.
 
-## ✨ Features
-
-- **Total Freedom:** Choose between local (Ollama) and cloud (Pinac-Cloud) AI models to suit your workflow and privacy needs.
-- **Privacy by Design:** No personal data is ever shared or stored on our servers. All features work fully offline, ensuring your data stays on your device.
-- **Local RAG Integration:** Attach documents directly in chat and leverage a lightweight, local Retrieval-Augmented Generation (RAG) model. Optionally, plug in your own RAG model for advanced use cases.
-- **Real-Time Web Search:** Instantly access up-to-date information from the web to answer questions and enhance conversations.
-- **Secure Authentication:** Sign in and out securely with Firebase Authentication, protecting your identity and access.
-- **Local Chat History:** All conversations are stored locally for your privacy and convenience. Easily revisit and refine past chats.
-- **Modern Desktop Experience:** Enjoy a sleek, responsive UI built with Electron and React, powered by a robust Python backend.
-
 ## 🛹 UI-Design
 
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/UI-Design.png" alt="app screenshot">
-
-## 🗼 System Design
-
-<img src="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/assets/system_architechture.png" alt="system design">
-
-> [!NOTE]
-> You can find the microservice code (ready to be deployed to the cloud and used as required services) in the following repository:
-> [RajeshTechForge/PINAC_Microservices](https://github.com/RajeshTechForge/PINAC_Microservices)
-
-## 📂 File Structure
-
-Overview of File Structure in Brief to Help You Get Started.
-
-      .
-      ├── index.html
-      ├── public/
-      ├── electron/
-      |
-      ├── backend/
-      |   ├── auth/
-      |   ├── utils/
-      |   ├── models/
-      |   ├── rag/
-      |   ├── app.py
-      |   ├── app.spec
-      |   ├── build_app.py
-      |   └── custom_types.py
-      |
-      └── src/
-          ├── App.tsx
-          ├── index.css
-          ├── index.tsx
-          ├── components/
-          │   ├── FrameHeader.tsx
-          │   ├── GreetingText.tsx
-          │   ├── MarkdownRenderer.tsx
-          │   └── ModalBox.tsx
-          │
-          ├── context/
-          │   ├── Attachment.tsx
-          │   ├── Authentication.tsx
-          │   ├── ChatMsg.tsx
-          │   ├── EmbeddingSettings.tsx
-          |   ├── ModalBox.tsx
-          │   ├── ModelSettings.tsx
-          │   ├── OllamaSettings.tsx
-          │   ├── SettingsProvider.ts
-          │   ├── StopTextGeneration.ts
-          │   ├── themeManager.ts
-          │   └── WelcomeText.tsx
-          │
-          ├── features/
-          │   ├── appSettings/
-          │   ├── sidebar/
-          │   ├── chatHistory/
-          │   ├── chatInput/
-          │   ├── database/
-          │   └── messageBubble/
-          │
-          └── pages/
-              ├── Home.tsx
-              └── SignIn.tsx
+<img src="https://github.com/RajeshTechForge/pinac_workspace/blob/main/assets/UI-Design.png" alt="app screenshot">
 
 ## 🚀 Getting Started
 
 > [!NOTE]  
-> Make sure Ollama is installed in your system
+> We are changing the backend from Flask to FastAPI for better performance and scalability. The new backend is under development and will be available soon.
 
 1. Clone the Repository
 
    ```bash
-   git clone https://github.com/RajeshTechForge/PINAC_Workspace_2.0.git && cd "PINAC_Workspace_2.0"
+   git clone https://github.com/RajeshTechForge/pinac_workspace.git
+   cd pinac_workspace
+
    ```
 
-2. Install Node dependencies
+2. Install Dependencies & Launch
 
    ```bash
    npm install
-   ```
-
-3. Create a Python Env for running backend
-
-   ```bash
-   cd backend
-   python -m venv venv
-   ```
-
-4. Install Python dependencies
-
-   ```bash
-   # Activate the virtual environment
-   # On macOS/Linux:
-   source venv/bin/activate  # On Windows: env\Scripts\activate
-
-   pip install -r requirements.txt
-   ```
-
-5. Start the App  
-   (For regular time usage, no need to start the Python env or backend file separately)
-   ```bash
    npm run dev
+
    ```
 
-   If want to build the app for production, just run `npm run build`
 
 ## 🎉 Contributing
 
@@ -156,12 +64,12 @@ We highly welcome contributions! Please follow the steps if you're interested.
 
 ## 📄 License
 
-PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/blob/main/LICENSE">LICENSE</a> file for more details.
+PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/pinac_workspace/blob/main/LICENSE">LICENSE</a> file for more details.
 
 ## 🌏 Contributors
 
 Thanks to our contributors, we have received huge support from the open-source community.
 
-<a href="https://github.com/RajeshTechForge/PINAC_Workspace_2.0/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=RajeshTechForge/PINAC_Workspace_2.0" />
+<a href="https://github.com/RajeshTechForge/pinac_workspace/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=RajeshTechForge/pinac_workspace" />
 </a>

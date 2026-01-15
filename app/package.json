@@ -1,14 +1,14 @@
 {
   "name": "pinac-workspace",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "A Privacy-First Desktop AI App for Everyone",
-  "homepage": "https://github.com/RajeshTechForge/PINAC_Workspace#readme",
+  "homepage": "https://github.com/RajeshTechForge/pinac_workspace#readme",
   "bugs": {
-    "url": "https://github.com/RajeshTechForge/PINAC_Workspace/issues"
+    "url": "https://github.com/RajeshTechForge/pinac_workspace/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RajeshTechForge/PINAC_Workspace.git"
+    "url": "git+https://github.com/RajeshTechForge/pinac_workspace.git"
   },
   "license": "MIT",
   "author": "@RajeshTechForge",

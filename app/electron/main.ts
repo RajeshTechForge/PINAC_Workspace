@@ -1,156 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain, shell, dialog } from "electron";
 import { fileURLToPath } from "node:url";
-import { spawn } from "node:child_process";
 import path from "node:path";
 import * as fs from "fs";
-import * as net from "net";
-import isDev from "electron-is-dev";
-import { ChildProcessWithoutNullStreams } from "child_process";
-
-// ====================================================== //
-//         Functions to Find Free Port for Backend        //
-// ====================================================== //
-
-const findFreePort = (startPort: number = 5000): Promise<number[]> => {
-  return new Promise((resolve, reject) => {
-    const server = net.createServer();
-
-    server.listen(startPort, () => {
-      const port = (server.address() as net.AddressInfo)?.port;
-      server.close(() => {
-        resolve([port]);
-      });
-    });
-
-    server.on("error", (err: any) => {
-      if (err.code === "EADDRINUSE") {
-        // Port is in use, try the next one
-        findFreePort(startPort + 1)
-          .then(resolve)
-          .catch(reject);
-      } else {
-        reject(err);
-      }
-    });
-  });
-};
-
-// ====================================================== //
-//         Functions to Manage Python Backend             //
-// ====================================================== //
-
-let pythonProcess: ChildProcessWithoutNullStreams | null;
-let backendPort: number | null;
-
-const startPythonBackend = async () => {
-  try {
-    // Find an available port
-    const [port] = await findFreePort();
-    backendPort = port;
-
-    console.log(`Starting Python backend on port ${port}`);
-
-    let pythonCommand;
-    let pythonArgs;
-    let pythonOptions;
-
-    if (isDev) {
-      if (process.platform === "win32") {
-        // Windows
-        pythonCommand = path.join(
-          __dirname,
-          "..",
-          "backend",
-          "venv",
-          "Scripts",
-          "python.exe"
-        );
-      } else {
-        // macOS/Linux
-        pythonCommand = path.join(
-          __dirname,
-          "..",
-          "backend",
-          "venv",
-          "bin",
-          "python"
-        );
-      }
-
-      pythonArgs = [
-        path.join(__dirname, "..", "backend", "app.py"),
-        "--port",
-        port.toString(),
-      ];
-
-      pythonOptions = {
-        cwd: path.join(__dirname, "..", "backend"),
-      };
-    } else {
-      // Production: Use the packaged Python executable
-      if (process.platform === "win32") {
-        pythonCommand = path.join(process.resourcesPath, "backend", "app.exe");
-      } else {
-        pythonCommand = path.join(process.resourcesPath, "backend", "app");
-      }
-
-      pythonArgs = ["--port", port.toString()];
-
-      pythonOptions = {
-        cwd: path.join(process.resourcesPath, "backend"),
-      };
-    }
-
-    // Create environment variables - pass the port
-    const env = { ...process.env, PORT: port.toString() };
-    // @ts-ignore
-    pythonOptions.env = env;
-
-    // Spawn the Python process
-    pythonProcess = spawn(pythonCommand, pythonArgs, pythonOptions);
-
-    // Handle Python process output
-    pythonProcess.stdout.on("data", (data) => {
-      console.log(`Python backend: ${data}`);
-    });
-
-    pythonProcess.stderr.on("data", (data) => {
-      console.error(`Python backend error: ${data}`);
-    });
-
-    pythonProcess.on("close", (code) => {
-      console.log(`Python backend process exited with code ${code}`);
-      pythonProcess = null;
-    });
-
-    // Return the port for the frontend to use
-    return port;
-  } catch (error) {
-    console.error("Failed to start Python backend:", error);
-    app.quit();
-  }
-};
-
-//
-const stopPythonBackend = () => {
-  if (pythonProcess) {
-    console.log("Stopping Python backend");
-
-    if (process.platform === "win32") {
-      // On Windows, use taskkill to ensure all child processes are terminated
-      spawn("taskkill", ["/pid", String(pythonProcess.pid), "/f", "/t"]);
-    } else {
-      // On macOS/Linux, use the kill command
-      pythonProcess.kill();
-    }
-
-    pythonProcess = null;
-  }
-};
-
-// ============================================================ //
-//          Creating Main Window and Initializing App           //
-// ============================================================ //
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -227,10 +78,6 @@ const createMainWindow = async () => {
       "main-process-message",
       new Date().toLocaleString()
     );
-    // Send backend port immediately when window is ready
-    if (backendPort) {
-      mainWindow?.webContents.send("backend-port-initial", backendPort);
-    }
   });
 
   if (VITE_DEV_SERVER_URL) {
@@ -267,8 +114,6 @@ app.on("activate", () => {
 });
 
 app.whenReady().then(async () => {
-  // Start Python backend first
-  await startPythonBackend();
   createMainWindow();
 });
 
@@ -278,9 +123,7 @@ app.whenReady().then(async () => {
 
 ipcMain.on("get-user-info", async (event) => {
   try {
-    const response = await fetch(
-      `http://localhost:${backendPort}/api/auth/user-info`
-    );
+    const response = await fetch(`http://localhost:8000/api/auth/user-info`);
     const userData = await response.json();
     event.reply("backend-response", userData);
   } catch (error) {
@@ -295,14 +138,11 @@ ipcMain.on("get-user-info", async (event) => {
 
 ipcMain.on("save-user-info", async (event, userInfo) => {
   try {
-    const response = await fetch(
-      `http://localhost:${backendPort}/api/auth/user-info`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userInfo),
-      }
-    );
+    const response = await fetch(`http://localhost:8000/api/auth/user-info`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userInfo),
+    });
     const result = await response.json();
     event.reply("backend-response", {
       error_occurred: !result.success,
@@ -362,17 +202,13 @@ ipcMain.on("maximize", () => {
 
 ipcMain.on("close", () => {
   if (mainWindow) {
-    // Set a flag to skip any confirmation dialogs or save prompts
     mainWindow.webContents.closeDevTools();
-    // For immediate visual feedback, hide the window first
     mainWindow.hide();
     // Force garbage collection of any resources
     if (global.gc) global.gc();
-    // Destroy the window and quit the app in one go
     mainWindow.destroy();
-    stopPythonBackend();
     if (process.platform !== "darwin") {
-      app.exit(0); // More immediate than app.quit()
+      app.exit(0);
     }
   }
 });
@@ -436,14 +272,11 @@ const parseAuthDataFromUrl = async (url: string) => {
   if (encodedData) {
     try {
       // Send auth data to backend instead of handling locally
-      const response = await fetch(
-        `http://localhost:${backendPort}/api/auth/deep-link`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: encodedData }),
-        }
-      );
+      const response = await fetch(`http://localhost:8000/api/auth/deep-link`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: encodedData }),
+      });
 
       const result = await response.json();
       if (result.success) {

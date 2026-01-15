@@ -1,11 +1,10 @@
-## PR Description 📜
-
+## Description
 <!-- Descripbe your changes -->
 
-## Screenshots (if applicable)
+## Screenshots/Video
+<!-- (if applicable else write None) -->
 
 ## Related Issues
-
 <!-- (if applicable else write None) -->
 
 ## Checklist

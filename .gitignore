@@ -15,8 +15,6 @@ release
 *.local
 
 # python backend
-env
-venv
 .venv
 build
 __pycache__
@@ -37,13 +35,6 @@ vector_stores
 # secret
 .env
 .env.local
-
-#testing
-test.js
-test.ts
-test.jsx
-test.tsx
-test.py
 
 # cache
 extracted_cache.json

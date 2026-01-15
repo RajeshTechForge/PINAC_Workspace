@@ -1,27 +1,51 @@
 """
 NOTE
-In the backend files, normal `print("some text")` will not work.
-Use `print("some text", flush=True)` instead.
+It is under Development
 """
 
 import os
 import sys
-from json import dump, loads
 import argparse
 from datetime import datetime
-import urllib.parse
-from flask import Flask, request, Response, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+from typing import Optional, List, Dict
+
 from custom_types import ChatRequest
-from auth.auth_manager import AuthManager
 from utils.api_client import APIClient
 from rag.functions import check_embedding_model, download_embedding_model
 from rag.default_embedder import DefaultRAG
 from models.defaultModel import DefaultChatModel
 from models.ollamaModel import OllamaChatModel
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+class ChatRequestSchema(BaseModel):
+    prompt: Optional[str] = None
+    messages: Optional[List[Dict[str, str]]] = Field(default_factory=list)
+    model: Optional[str] = None
+    system_prompt: Optional[str] = None
+    stream: Optional[bool] = False
+    temperature: Optional[float] = 0.7
+    top_p: Optional[float] = 0.95
+    top_k: Optional[int] = 40
+    max_tokens: Optional[int] = 2096
+    rag: Optional[bool] = False
+    documents_path: Optional[str] = None
+    web_search: Optional[bool] = False
+    date: Optional[str] = None
+
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Python Backend API")
@@ -41,102 +65,36 @@ else:
 port = int(os.environ.get("PORT", args.port))
 debug = os.environ.get("DEBUG", "False").lower() == "true" or args.debug
 
-# Initialize auth manager
-auth_manager = AuthManager()
-
 # Initialize API client
 api_client = APIClient()
 
 # Initializing the chat model
 default_model = DefaultChatModel()
 ollama_model = OllamaChatModel()
+ollama_model.ensure_ollama_running()
 
 
-@app.route("/api/status", methods=["GET"])
+@app.get("/api/status")
 def status():
-    return jsonify({"status": "running", "port": port})
+    return {"status": "running", "port": port}
 
 
-@app.route("/api/auth/deep-link", methods=["POST"])
-def handle_deep_link():
-    try:
-        data = request.get_json()
-        encoded_data = data.get("data")
-
-        if not encoded_data:
-            return jsonify({"error": "No auth data provided"}), 400
-
-        # Decode the authentication data
-        auth_data = loads(urllib.parse.unquote(encoded_data))
-
-        # Store authentication data
-        result = auth_manager.store_auth_data(auth_data)
-
-        if result["success"]:
-            return jsonify({"success": True, "message": "Authentication successful"})
-        else:
-            return jsonify({"error": result["error"]}), 500
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/api/auth/status", methods=["GET"])
-def auth_status():
-    is_authenticated = auth_manager.is_authenticated()
-    return jsonify({"authenticated": is_authenticated})
-
-
-@app.route("/api/auth/user-info", methods=["GET"])
-def get_user_info():
-    user_info = auth_manager.get_user_info()
-    return jsonify(user_info)
-
-
-@app.route("/api/auth/user-info", methods=["POST"])
-def save_user_info():
-    try:
-        user_info = request.get_json()
-        user_data_dir = auth_manager.user_data_dir
-        user_info_file = os.path.join(user_data_dir, "user-info.json")
-
-        with open(user_info_file, "w") as f:
-            dump(user_info, f)
-
-        return jsonify({"success": True})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/api/auth/logout", methods=["GET"])
-def logout():
-    result = auth_manager.logout()
-    if result["success"]:
-        return jsonify({"success": True})
-    else:
-        return jsonify({"success": False, "error": result["error"]})
-
-
-@app.route("/api/rag/default-embedder/status", methods=["GET"])
+@app.get("/api/rag/default-embedder/status")
 def default_embedder_status():
     status = check_embedding_model()
-    return jsonify({"status": status})
+    return {"status": status}
 
 
-@app.route("/api/rag/default-embedder/download", methods=["GET"])
+@app.get("/api/rag/default-embedder/download")
 def default_embedder_download():
     status = download_embedding_model()
-    return jsonify(status)
+    return status
 
 
-@app.route("/api/chat/pinac-cloud/stream", methods=["POST"])
-def stream_pinac_cloud():
+@app.post("/api/chat/pinac-cloud/stream")
+def stream_pinac_cloud(request: ChatRequestSchema):
     try:
-        if not request.is_json:
-            return jsonify({"error": "Content-Type must be application/json"}), 400
-
-        data = request.get_json()
-        chat_request = ChatRequest.from_json(data)
+        chat_request = ChatRequest(**request.dict())
 
         if chat_request.web_search:
             current_date = datetime.now().strftime("%B %d, %Y")
@@ -155,11 +113,11 @@ def stream_pinac_cloud():
                 final_prompt = response.json()
                 chat_request.messages.extend(final_prompt)
             except ValueError as e:
-                return jsonify({"error": str(e)}), 401
+                return JSONResponse(status_code=401, content={"error": str(e)})
 
-            return Response(
+            return StreamingResponse(
                 default_model._generate(chat_request),
-                mimetype="text/event-stream",
+                media_type="text/event-stream",
             )
 
         elif chat_request.rag:
@@ -183,28 +141,24 @@ def stream_pinac_cloud():
                     "content": chat_request.prompt,
                 }
             )
-            return Response(
+            return StreamingResponse(
                 default_model._generate(chat_request),
-                mimetype="text/event-stream",
+                media_type="text/event-stream",
             )
 
         chat_request.messages.append({"role": "user", "content": chat_request.prompt})
-        return Response(
+        return StreamingResponse(
             default_model._generate(chat_request),
-            mimetype="text/event-stream",
+            media_type="text/event-stream",
         )
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
-@app.route("/api/chat/ollama/stream", methods=["POST"])
-def stream_ollama():
+@app.post("/api/chat/ollama/stream")
+def stream_ollama(request: ChatRequestSchema):
     try:
-        if not request.is_json:
-            return jsonify({"error": "Content-Type must be application/json"}), 400
-
-        data = request.get_json()
-        chat_request = ChatRequest.from_json(data)
+        chat_request = ChatRequest(**request.dict())
 
         if chat_request.web_search:
             current_date = datetime.now().strftime("%B %d, %Y")
@@ -223,10 +177,10 @@ def stream_ollama():
                 final_prompt = response.json()
                 chat_request.messages.extend(final_prompt)
             except ValueError as e:
-                return jsonify({"error": str(e)}), 401
+                return JSONResponse(status_code=401, content={"error": str(e)})
 
-            return Response(
-                ollama_model._generate(chat_request), mimetype="text/event-stream"
+            return StreamingResponse(
+                ollama_model._generate(chat_request), media_type="text/event-stream"
             )
 
         elif chat_request.rag:
@@ -250,36 +204,23 @@ def stream_ollama():
                     "content": chat_request.prompt,
                 }
             )
-            return Response(
-                ollama_model._generate(chat_request), mimetype="text/event-stream"
+            return StreamingResponse(
+                ollama_model._generate(chat_request), media_type="text/event-stream"
             )
 
         chat_request.messages.append({"role": "user", "content": chat_request.prompt})
-        return Response(
-            ollama_model._generate(chat_request), mimetype="text/event-stream"
+        return StreamingResponse(
+            ollama_model._generate(chat_request), media_type="text/event-stream"
         )
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
-@app.route("/api/ollama/models", methods=["GET"])
+@app.get("/api/ollama/models")
 def list_models():
     try:
         ollama = ollama_model.list_available_models()
         models = [model.model for model in ollama.models]
-        return jsonify(models)
+        return models
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    ollama_model.ensure_ollama_running()
-
-    if debug:
-        # Use Flask's development server for debugging
-        app.run(host="127.0.0.1", port=port, debug=True)
-    else:
-        # Use waitress for better performance
-        from waitress import serve
-
-        serve(app, host="127.0.0.1", port=port)
+        return JSONResponse(status_code=500, content={"error": str(e)})
