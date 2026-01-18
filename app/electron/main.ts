@@ -3,17 +3,12 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import * as fs from "fs";
 
+import SecureMasterKeyManager from "./utilis/masterKeyManager";
+import SecureTokenManager from "./utilis/tokenManager";
+
+//
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.js
-// │
 process.env.APP_ROOT = path.join(__dirname, "..");
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
@@ -76,7 +71,7 @@ const createMainWindow = async () => {
   mainWindow.webContents.on("did-finish-load", () => {
     mainWindow?.webContents.send(
       "main-process-message",
-      new Date().toLocaleString()
+      new Date().toLocaleString(),
     );
   });
 
@@ -118,45 +113,8 @@ app.whenReady().then(async () => {
 });
 
 // ======================================================================== //
-//        frontend request to backend (for backend functionalities)          //
+//        frontend request to backend (for backend functionalities)         //
 // ======================================================================== //
-
-ipcMain.on("get-user-info", async (event) => {
-  try {
-    const response = await fetch(`http://localhost:8000/api/auth/user-info`);
-    const userData = await response.json();
-    event.reply("backend-response", userData);
-  } catch (error) {
-    const userData = {
-      displayName: null,
-      nickname: null,
-      email: null,
-    };
-    event.reply("backend-response", userData);
-  }
-});
-
-ipcMain.on("save-user-info", async (event, userInfo) => {
-  try {
-    const response = await fetch(`http://localhost:8000/api/auth/user-info`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userInfo),
-    });
-    const result = await response.json();
-    event.reply("backend-response", {
-      error_occurred: !result.success,
-      response: result.success,
-      error: result.error || null,
-    });
-  } catch (error: any) {
-    event.reply("backend-response", {
-      error_occurred: true,
-      response: false,
-      error: error.message,
-    });
-  }
-});
 
 ipcMain.handle("open-file-dialog", async (_, acceptedFileTypes) => {
   const filters = [];
@@ -173,7 +131,7 @@ ipcMain.handle("open-file-dialog", async (_, acceptedFileTypes) => {
     filters: filters,
   });
   if (!result.canceled) {
-    return result.filePaths[0]; // Full path to selected file
+    return result.filePaths[0];
   }
   return null;
 });
@@ -238,7 +196,6 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on("second-instance", (_, commandLine) => {
-    // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
@@ -249,7 +206,7 @@ if (!gotTheLock) {
     } else {
       dialog.showErrorBox(
         "Error",
-        "Something went wrong, unable to authenticate. Please try again."
+        "Something went wrong, unable to authenticate. Please try again.",
       );
     }
   });
@@ -271,30 +228,40 @@ const parseAuthDataFromUrl = async (url: string) => {
   const encodedData = urlObj.searchParams.get("data");
   if (encodedData) {
     try {
-      // Send auth data to backend instead of handling locally
-      const response = await fetch(`http://localhost:8000/api/auth/deep-link`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: encodedData }),
-      });
+      const decodedData = Buffer.from(encodedData, "base64").toString("utf-8");
+      const { idToken, refreshToken, webApiKey, email } =
+        JSON.parse(decodedData);
 
-      const result = await response.json();
-      if (result.success) {
-        mainWindow?.reload(); // Reload the app
+      if (idToken && refreshToken && webApiKey) {
+        const masterKey = SecureMasterKeyManager.getPersistentMasterKey();
+        const tokenManager = new SecureTokenManager(masterKey);
+
+        tokenManager.storeToken("idToken", idToken);
+        tokenManager.storeToken("refreshToken", refreshToken);
+        tokenManager.storeToken("webApiKey", webApiKey);
+        if (email) tokenManager.storeToken("userEmail", email);
+
+        if (mainWindow) {
+          mainWindow.webContents.send(
+            "auth-success",
+            "Authentication successful",
+          );
+          mainWindow.reload();
+        }
       } else {
-        dialog.showErrorBox("Authentication Error", result.error);
+        throw new Error("Missing Tokens");
       }
     } catch (error) {
       console.error("Deep link handling error:", error);
       dialog.showErrorBox(
         "Error",
-        "Something went wrong during authentication. Please try again."
+        "Something went wrong during authentication. Please try again.",
       );
     }
   } else {
     dialog.showErrorBox(
       "Error",
-      "Something went wrong, unable to authenticate. Please try again."
+      "Something went wrong, unable to authenticate. Please try again.",
     );
   }
 };
