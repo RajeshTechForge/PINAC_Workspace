@@ -8,13 +8,6 @@
     output: "release/${version}",
   },
   files: ["dist", "dist-electron"],
-  extraResources: [
-    {
-      from: "backend/dist/app.exe",
-      to: "backend/app.exe",
-      filter: ["**/*"],
-    },
-  ],
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",

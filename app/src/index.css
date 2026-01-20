@@ -8,19 +8,19 @@
 
 @font-face {
   font-family: "DMSans";
-  src: url("/font/DMSans-VariableFont_wght.ttf");
+  src: url("@/assets/font/DMSans-VariableFont_wght.ttf");
   font-display: swap;
 }
 
 @font-face {
   font-family: "CormorantGaramond";
-  src: url("/font/CormorantGaramond-VariableFont_wght.ttf");
+  src: url("@/assets/font/CormorantGaramond-VariableFont_wght.ttf");
   font-display: swap;
 }
 
 @font-face {
   font-family: "PTSerif-Bold";
-  src: url("/font/PTSerif-Bold.ttf");
+  src: url("@/assets/font/PTSerif-Bold.ttf");
   font-display: swap;
 }
 

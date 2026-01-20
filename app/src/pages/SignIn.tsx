@@ -1,18 +1,18 @@
 import React from "react";
-import appLogo from "/icon/Full App Logo.svg";
+import appLogo from "@/assets/icon/Full App Logo.svg";
 
 const SignInPage: React.FC = () => {
   const handleButtonClick = () => {
     window.ipcRenderer.send(
       "open-external-link",
-      "https://pinacworkspace.vercel.app/auth/sign-up/?app-auth=true"
+      "https://pinacworkspace.vercel.app/auth/sign-up/?app-auth=true",
     );
   };
 
   const handleLinkClick = () => {
     window.ipcRenderer.send(
       "open-external-link",
-      "https://pinacworkspace.vercel.app/auth/sign-in/?app-auth=true"
+      "https://pinacworkspace.vercel.app/auth/sign-in/?app-auth=true",
     );
   };
 

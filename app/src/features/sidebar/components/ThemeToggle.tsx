@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getStoredTheme, setStoredTheme } from "../../../context/ThemeManager";
+import { getStoredTheme, setStoredTheme } from "../../../contexts/ThemeManager";
 
 // icons
 import { MdWbSunny } from "react-icons/md";
