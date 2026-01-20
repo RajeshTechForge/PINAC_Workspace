@@ -1,36 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import { DropdownMenu } from "./DropdownMenu";
-import { useModelContext } from "@/contexts";
+import { useModelSettings } from "@/contexts";
+import {
+  getProviderDisplayNames,
+  getProviderByDisplayName,
+  getModelDisplayNames,
+} from "@/config/models";
 
 export const LLMSelector: React.FC = () => {
-  const model = useModelContext();
-  const [ollamaModelList, setOllamaModelList] = useState([]);
-  //
-  // -------------------------------- //
+  const modelSettings = useModelSettings();
+
+  // Get all provider display names from config
+  const providerOptions = getProviderDisplayNames();
+
+  // Get current provider config
+  const currentProvider = getProviderByDisplayName(
+    modelSettings.getCurrentProviderName(),
+  );
+
+  // Get models for current provider
+  const modelOptions = currentProvider
+    ? getModelDisplayNames(currentProvider.id)
+    : [];
+
   return (
     <div className="w-full flex flex-col gap-4">
-      {/*     Dropdown menu for selecting the LLM type   */}
-      {/* ---------------------------------------------- */}
+      {/* Dropdown for selecting the provider */}
       <DropdownMenu
-        defaultOption="Pinac Cloud Model"
-        optionList={["Pinac Cloud Model", "Ollama Model"]}
-        valueName="model-type"
+        defaultOption={modelSettings.getCurrentProviderName()}
+        optionList={providerOptions}
+        valueName="provider"
       />
-      {/*    for selecting the LLM Name    */}
-      {/* -------------------------------- */}
-      {model.modelType === "Pinac Cloud Model" ? (
-        <DropdownMenu
-          defaultOption="Base Model"
-          optionList={["Base Model"]}
-          valueName="pinac-cloud-model"
-        />
-      ) : (
-        <DropdownMenu
-          defaultOption={null}
-          optionList={ollamaModelList}
-          valueName="ollama-model"
-        />
-      )}
+
+      {/* Dropdown for selecting the model */}
+      <DropdownMenu
+        defaultOption={modelSettings.getCurrentModelName()}
+        optionList={modelOptions}
+        valueName="model"
+      />
     </div>
   );
 };

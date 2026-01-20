@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import { GreetingText, MessageList, InputArea } from "@/features/chat";
-import { useChatContext, useModelContext, useUIContext } from "@/contexts";
+import { useChatContext, useModelSettings, useUIContext } from "@/contexts";
 import { useChatActions } from "@/hooks";
 
 interface MainLayoutContext {
@@ -11,7 +11,7 @@ interface MainLayoutContext {
 const HomePage: React.FC = () => {
   const { isSidebarExpanded } = useOutletContext<MainLayoutContext>();
   const chat = useChatContext();
-  const model = useModelContext();
+  const model = useModelSettings();
   const ui = useUIContext();
   const { sendMessage, stopGeneration } = useChatActions();
   const scrollRef = useRef<HTMLDivElement>(null);

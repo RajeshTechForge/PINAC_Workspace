@@ -1,5 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { useModelContext } from "@/contexts";
+import { useModelSettings } from "@/contexts";
+import {
+  getProviderByDisplayName,
+  getModelByDisplayName,
+} from "@/config/models";
 
 // Icon
 import { IoIosArrowDown } from "react-icons/io";
@@ -8,7 +12,7 @@ import { IoIosArrowUp } from "react-icons/io";
 interface DropdownMenuProps {
   defaultOption: string | null;
   optionList: Array<string>;
-  valueName?: "model-type" | "pinac-cloud-model" | "ollama-model";
+  valueName?: "provider" | "model";
 }
 
 export const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -16,33 +20,53 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
   optionList,
   valueName,
 }) => {
-  const model = useModelContext();
+  const modelSettings = useModelSettings();
   const [selectedOption, setSelectedOption] = useState(defaultOption);
   const [isActive, setIsActive] = useState(false);
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
   const onClick = (option: string) => {
     if (!valueName) return;
-    if (valueName === "model-type") model.setModelType(option as any);
-    else if (valueName === "pinac-cloud-model")
-      model.setPinacCloudModel(option as any);
-    else if (valueName === "ollama-model") model.setOllamaModel(option);
+
+    if (valueName === "provider") {
+      // User selected a provider by display name
+      const provider = getProviderByDisplayName(option);
+      if (provider) {
+        modelSettings.setSelectedProvider(provider.id);
+      }
+    } else if (valueName === "model") {
+      // User selected a model by display name
+      const model = getModelByDisplayName(
+        modelSettings.selectedProviderId,
+        option,
+      );
+      if (model) {
+        modelSettings.setSelectedModel(model.id);
+      }
+    }
+
     setSelectedOption(option);
     setIsActive(false);
   };
 
-  // At starting selecting model based on local storage
+  // Initialize selected option based on current settings
   useEffect(() => {
     if (!valueName) return;
-    let preferredOption: string | null = null;
-    if (valueName === "model-type") preferredOption = model.modelType;
-    else if (valueName === "pinac-cloud-model")
-      preferredOption = model.pinacCloudModel;
-    else if (valueName === "ollama-model") preferredOption = model.ollamaModel;
-    preferredOption != null && setSelectedOption(preferredOption);
-  }, [model, valueName]);
 
-  // Creating an event handler to close the dropdown menu by click elsewhere outside the menu
+    let currentOption: string | null = null;
+
+    if (valueName === "provider") {
+      currentOption = modelSettings.getCurrentProviderName();
+    } else if (valueName === "model") {
+      currentOption = modelSettings.getCurrentModelName();
+    }
+
+    if (currentOption != null) {
+      setSelectedOption(currentOption);
+    }
+  }, [modelSettings, valueName]);
+
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleOutsideClicks = (e: MouseEvent) => {
       if (
@@ -57,7 +81,6 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     return () => window.removeEventListener("mousedown", handleOutsideClicks);
   }, [isActive]);
 
-  // -------------------------------------------- //
   return (
     <div className="w-full text-gray-200" ref={dropdownMenuRef}>
       <div

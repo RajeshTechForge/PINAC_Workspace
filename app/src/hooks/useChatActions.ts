@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import { useChatContext } from "@/contexts/ChatContext";
-import { useModelContext } from "@/contexts/ModelContext";
+import { useModelSettings } from "@/contexts/ModelSettingsContext";
 import { useAttachmentContext } from "@/contexts/AttachmentContext";
 import { useUIContext } from "@/contexts/UIContext";
 import {
@@ -8,7 +8,7 @@ import {
   startChatStream,
   stopChatStream,
 } from "./useChatStream";
-import { ChatRequest, Message, ModelProvider, UIMessage } from "@/types";
+import { ChatRequest, Message, UIMessage } from "@/types";
 import { startNewSession, addMsgToSession } from "@/database/db";
 
 interface UseChatActionsReturn {
@@ -33,7 +33,7 @@ const convertToApiMessages = (messages: UIMessage[]): Message[] => {
 
 export const useChatActions = (): UseChatActionsReturn => {
   const chat = useChatContext();
-  const model = useModelContext();
+  const modelSettings = useModelSettings();
   const attachment = useAttachmentContext();
   const ui = useUIContext();
 
@@ -98,7 +98,7 @@ export const useChatActions = (): UseChatActionsReturn => {
       streamingMessageRef.current.split("_")[1] || "0",
     );
     const content = streamingContentRef.current;
-    const modelName = model.getCurrentModelName();
+    const modelName = modelSettings.getCurrentModelName();
 
     // Mark as complete
     chat.updateMessage(streamingMessageRef.current, {
@@ -113,7 +113,7 @@ export const useChatActions = (): UseChatActionsReturn => {
     streamingContentRef.current = "";
     ui.setInputDisabled(false);
     chat.setIsStreaming(false);
-  }, [chat, model, ui, saveMessageToDatabase]);
+  }, [chat, modelSettings, ui, saveMessageToDatabase]);
 
   const handleStreamError = useCallback(
     (error: string) => {
@@ -154,7 +154,7 @@ export const useChatActions = (): UseChatActionsReturn => {
       ui.setWelcomeVisible(false);
       chat.setIsStreaming(true);
 
-      const modelName = model.getCurrentModelName();
+      const modelName = modelSettings.getCurrentModelName();
 
       // Handle attachment
       let attachmentName: string | undefined;
@@ -194,20 +194,19 @@ export const useChatActions = (): UseChatActionsReturn => {
       streamingContentRef.current = "";
 
       // Prepare API request
-      const provider: ModelProvider =
-        model.getCurrentModelName() === "Pinac Cloud Model"
-          ? "pinac-cloud"
-          : "ollama";
+      const provider = modelSettings.selectedProviderId;
+      const modelId = modelSettings.selectedModelId;
 
       const apiMessages = convertToApiMessages(chat.messages);
+
+      const currentSettings = modelSettings.getCurrentSettings();
 
       const request: ChatRequest = {
         prompt: content,
         messages: apiMessages,
         provider,
-        ...(provider === "ollama" &&
-          model.ollamaModel && { model: model.ollamaModel }),
-        ...(model.webSearch && { web_search: true }),
+        model: modelId,
+        web_search: currentSettings.webSearch || false,
         ...(attachment.attachment && {
           rag: true,
           documents_path: attachment.attachment.path,
@@ -220,7 +219,7 @@ export const useChatActions = (): UseChatActionsReturn => {
       // Clear input
       ui.resetInput();
     },
-    [chat, model, attachment, ui, saveMessageToDatabase],
+    [chat, modelSettings, attachment, ui, saveMessageToDatabase],
   );
 
   // Stop the current AI generation
@@ -235,7 +234,7 @@ export const useChatActions = (): UseChatActionsReturn => {
     );
     const partialContent =
       streamingContentRef.current || "[Generation stopped]";
-    const modelName = model.getCurrentModelName();
+    const modelName = modelSettings.getCurrentModelName();
 
     // Update UI
     chat.updateMessage(streamingMessageRef.current, {
@@ -256,7 +255,7 @@ export const useChatActions = (): UseChatActionsReturn => {
     streamingContentRef.current = "";
     ui.setInputDisabled(false);
     chat.setIsStreaming(false);
-  }, [chat, model, ui, saveMessageToDatabase]);
+  }, [chat, modelSettings, ui, saveMessageToDatabase]);
 
   const startNewChat = useCallback(() => {
     chat.clearMessages();

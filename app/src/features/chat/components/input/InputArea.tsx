@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useModelContext, useAttachmentContext } from "@/contexts";
+import { useModelSettings, useAttachmentContext } from "@/contexts";
 import { promptsData } from "@/data/prompts";
 
 // icons
@@ -29,7 +29,7 @@ export const InputArea: React.FC<InputAreaProps> = ({
   submit,
   setStop,
 }) => {
-  const model = useModelContext();
+  const model = useModelSettings();
   const attachment = useAttachmentContext();
   const [isPromptMenuOpen, setIsPromptMenuOpen] = useState<boolean>(false);
   const [promptSearchQuery, setPromptSearchQuery] = useState<string>(""); // State for search query
@@ -38,11 +38,11 @@ export const InputArea: React.FC<InputAreaProps> = ({
 
   // Handles adding attachment
   const handleFileUpload = async () => {
-    model.setWebSearch(false);
+    model.updateProviderSetting(model.selectedProviderId, "webSearch", false);
 
     let filters: { name: string; extensions: string[] }[] = [];
 
-    if (model.modelType === "Pinac Cloud Model") {
+    if (model.selectedProviderId === "pinac-cloud") {
       filters = [{ name: "Supported Files", extensions: ["pdf"] }];
     } else {
       filters = [
@@ -238,18 +238,40 @@ export const InputArea: React.FC<InputAreaProps> = ({
                   className={`flex items-center gap-2 px-4 py-2 rounded-full border-1
                   border-gray-400 dark:border-zinc-500 cursor-pointer
                   ${
-                    model?.webSearch
+                    model?.getProviderSetting(
+                      model.selectedProviderId,
+                      "webSearch",
+                    )
                       ? "bg-green-200 dark:bg-green-900/30 border-green-400 dark:border-green-600"
                       : ""
                   }`}
-                  onClick={() => model.setWebSearch(!model.webSearch)}
+                  onClick={() =>
+                    model.updateProviderSetting(
+                      model.selectedProviderId,
+                      "webSearch",
+                      !model.getProviderSetting(
+                        model.selectedProviderId,
+                        "webSearch",
+                      ),
+                    )
+                  }
                 >
-                  {model?.webSearch ? (
+                  {model?.getProviderSetting(
+                    model.selectedProviderId,
+                    "webSearch",
+                  ) ? (
                     <GoGlobe size={20} className="text-green-600" />
                   ) : (
                     <PiGlobeX size={20} />
                   )}
-                  <span>{model?.webSearch ? "Quick Search" : "Web"}</span>
+                  <span>
+                    {model?.getProviderSetting(
+                      model.selectedProviderId,
+                      "webSearch",
+                    )
+                      ? "Quick Search"
+                      : "Web"}
+                  </span>
                 </button>
               </div>
             )}

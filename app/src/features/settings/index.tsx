@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { LLMSelector } from "./components/LLMSelector";
+import { AdvancedSettings } from "./components/AdvancedSettings";
 import { DropdownMenu } from "./components/DropdownMenu";
 
 // Icons
@@ -207,7 +208,14 @@ export const Settings = () => {
               </div>
               <LLMSelector />
             </div>
-            {/*   Section 2 (Output Language)    */}
+
+            {/*   Section 2 (Advanced Settings)  */}
+            {/* ================================= */}
+            <div className="w-full py-5 px-2 flex flex-col items-center">
+              <AdvancedSettings />
+            </div>
+
+            {/*   Section 3 (Output Language)    */}
             {/* ================================= */}
             <div className="w-full py-5 px-2 flex flex-col items-center">
               <div className="w-full text-lg pb-7 text-gray-200">

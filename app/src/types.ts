@@ -32,22 +32,29 @@ export interface DatabaseMessage {
 
 //        MODEL & SETTINGS TYPES
 // ----------------------------------------
+// Note: Provider and model configurations are centralized in /config/models.ts
 
-/** Supported AI model providers */
-export type ModelProvider = "pinac-cloud" | "ollama";
+/** Supported AI model providers (derived from config) */
+export type ModelProvider = string;
 
-/** Model type configuration */
-export type ModelType = "Pinac Cloud Model" | "Ollama Model";
+/** Current model selection */
+export interface SelectedModel {
+  providerId: string;
+  providerName: string;
+  modelId: string;
+  modelName: string;
+}
 
-/** Available Pinac Cloud models */
-export type PinacCloudModel = "Base Model";
-
-/** Model configuration settings */
-export interface ModelSettings {
-  modelType: ModelType;
-  pinacCloudModel: PinacCloudModel;
-  ollamaModel: string | null;
-  webSearch: boolean;
+/** Per-provider advanced settings */
+export interface ProviderSettings {
+  [providerId: string]: {
+    temperature?: number;
+    maxTokens?: number;
+    topK?: number;
+    topP?: number;
+    webSearch?: boolean;
+    [key: string]: any; // Allow custom settings per provider
+  };
 }
 
 //        ATTACHMENT TYPES
