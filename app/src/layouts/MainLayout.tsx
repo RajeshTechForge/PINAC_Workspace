@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "@/features/sidebar";
-import { FrameHeader } from "../components/FrameHeader";
-import { useChatActions } from "../hooks";
+import { FrameHeader } from "@/components/FrameHeader";
+import { useChatActions } from "@/hooks";
 
 export const MainLayout = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);

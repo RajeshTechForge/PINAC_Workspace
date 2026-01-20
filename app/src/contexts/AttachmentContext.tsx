@@ -11,10 +11,6 @@ interface AttachmentContextValue {
   clearAttachment: () => void;
 }
 
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
 /**
  * Extract file details from full file path
  */
@@ -38,15 +34,7 @@ const parseFilePath = (filePath: string): FileAttachment => {
   };
 };
 
-// ============================================================================
-// CONTEXT CREATION
-// ============================================================================
-
 const AttachmentContext = createContext<AttachmentContextValue | null>(null);
-
-// ============================================================================
-// PROVIDER COMPONENT
-// ============================================================================
 
 interface AttachmentProviderProps {
   children: React.ReactNode;
@@ -108,9 +96,8 @@ export const AttachmentProvider: React.FC<AttachmentProviderProps> = ({
   );
 };
 
-// ============================================================================
-// CUSTOM HOOK
-// ============================================================================
+//    CUSTOM HOOK
+// ---------------------
 
 /**
  * Hook to access attachment context

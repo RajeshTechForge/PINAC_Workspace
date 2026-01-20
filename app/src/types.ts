@@ -1,6 +1,5 @@
-// ============================================================================
-// MESSAGE & CHAT TYPES
-// ============================================================================
+//          MESSAGE & CHAT TYPES
+// ----------------------------------------
 
 /** Supported message roles in a conversation */
 export type MessageRole = "user" | "assistant" | "system";
@@ -31,9 +30,8 @@ export interface DatabaseMessage {
   attachment?: string;
 }
 
-// ============================================================================
-// MODEL & SETTINGS TYPES
-// ============================================================================
+//        MODEL & SETTINGS TYPES
+// ----------------------------------------
 
 /** Supported AI model providers */
 export type ModelProvider = "pinac-cloud" | "ollama";
@@ -52,9 +50,8 @@ export interface ModelSettings {
   webSearch: boolean;
 }
 
-// ============================================================================
-// ATTACHMENT TYPES
-// ============================================================================
+//        ATTACHMENT TYPES
+// ------------------------------------
 
 /** File attachment metadata */
 export interface FileAttachment {
@@ -64,9 +61,8 @@ export interface FileAttachment {
   nameWithoutExtension: string;
 }
 
-// ============================================================================
-// API REQUEST/RESPONSE TYPES
-// ============================================================================
+//      API REQUEST/RESPONSE TYPES
+// -------------------------------------
 
 /** Unified chat request payload */
 export interface ChatRequest {
@@ -87,14 +83,13 @@ export interface ChatStreamChunk {
 }
 
 /** IPC Channel names for chat streaming */
-export type ChatStreamChannel = 
-  | "chat-stream-data" 
-  | "chat-stream-error" 
+export type ChatStreamChannel =
+  | "chat-stream-data"
+  | "chat-stream-error"
   | "chat-stream-done";
 
-// ============================================================================
-// DATABASE TYPES
-// ============================================================================
+//          DATABASE TYPES
+// --------------------------------------
 
 /** Chat session stored in IndexedDB */
 export interface ChatSession {
@@ -104,9 +99,8 @@ export interface ChatSession {
   messages: DatabaseMessage[];
 }
 
-// ============================================================================
-// UI STATE TYPES
-// ============================================================================
+//        UI STATE TYPES
+// --------------------------------------
 
 /** Chat UI state */
 export interface ChatState {
@@ -119,9 +113,8 @@ export interface ChatState {
 /** Loading state for async operations */
 export type LoadingState = "idle" | "loading" | "success" | "error";
 
-// ============================================================================
-// IPC TYPES (Renderer ↔ Main Process)
-// ============================================================================
+//    IPC TYPES (Renderer ↔ Main Process)
+// -------------------------------------------
 
 /** IPC events for renderer process */
 export interface IpcRendererEvents {

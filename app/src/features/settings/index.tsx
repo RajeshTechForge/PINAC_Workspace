@@ -13,7 +13,7 @@ export const Settings = () => {
   const [emailId, setEmailId] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"app settings" | "profile">(
-    "profile"
+    "profile",
   );
 
   const handleLogout = () => {

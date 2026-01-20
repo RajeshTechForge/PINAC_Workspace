@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DropdownMenu } from "./DropdownMenu";
-import { useModelContext } from "../../../contexts";
+import { useModelContext } from "@/contexts";
 
 export const LLMSelector: React.FC = () => {
   const model = useModelContext();

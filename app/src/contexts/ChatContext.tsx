@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { UIMessage } from "@/types";
 
-// ============================================================================
-// CONTEXT TYPE DEFINITIONS
-// ============================================================================
-
 interface ChatContextValue {
-  // State
   messages: UIMessage[];
   sessionId: string | null;
   isStreaming: boolean;
-  
-  // Actions
+
   addMessage: (message: Omit<UIMessage, "id" | "timestamp">) => UIMessage;
   updateMessage: (id: string, updates: Partial<UIMessage>) => void;
   clearMessages: () => void;
@@ -19,15 +19,7 @@ interface ChatContextValue {
   setIsStreaming: (streaming: boolean) => void;
 }
 
-// ============================================================================
-// CONTEXT CREATION
-// ============================================================================
-
 const ChatContext = createContext<ChatContextValue | null>(null);
-
-// ============================================================================
-// PROVIDER COMPONENT
-// ============================================================================
 
 interface ChatProviderProps {
   children: React.ReactNode;
@@ -37,7 +29,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [sessionId, setSessionIdState] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
-  
+
   // Use ref to generate consistent IDs
   const messageCounterRef = useRef(0);
 
@@ -45,30 +37,31 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
    * Add a new message to the chat
    * @returns The created message with generated ID
    */
-  const addMessage = useCallback((
-    message: Omit<UIMessage, "id" | "timestamp">
-  ): UIMessage => {
-    const newMessage: UIMessage = {
-      ...message,
-      id: `msg_${Date.now()}_${messageCounterRef.current++}`,
-      timestamp: Date.now(),
-    };
-    
-    setMessages(prev => [...prev, newMessage]);
-    return newMessage;
-  }, []);
+  const addMessage = useCallback(
+    (message: Omit<UIMessage, "id" | "timestamp">): UIMessage => {
+      const newMessage: UIMessage = {
+        ...message,
+        id: `msg_${Date.now()}_${messageCounterRef.current++}`,
+        timestamp: Date.now(),
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+      return newMessage;
+    },
+    [],
+  );
 
   /**
    * Update an existing message by ID
    */
-  const updateMessage = useCallback((
-    id: string, 
-    updates: Partial<UIMessage>
-  ) => {
-    setMessages(prev => 
-      prev.map(msg => msg.id === id ? { ...msg, ...updates } : msg)
-    );
-  }, []);
+  const updateMessage = useCallback(
+    (id: string, updates: Partial<UIMessage>) => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg)),
+      );
+    },
+    [],
+  );
 
   /**
    * Clear all messages from chat
@@ -96,16 +89,11 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     setIsStreaming,
   };
 
-  return (
-    <ChatContext.Provider value={value}>
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };
 
-// ============================================================================
-// CUSTOM HOOK
-// ============================================================================
+//    CUSTOM HOOK
+// ---------------------
 
 /**
  * Hook to access chat context
@@ -113,10 +101,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
  */
 export const useChatContext = (): ChatContextValue => {
   const context = useContext(ChatContext);
-  
+
   if (!context) {
     throw new Error("useChatContext must be used within ChatProvider");
   }
-  
+
   return context;
 };

@@ -1,20 +1,20 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { ModelType, PinacCloudModel, ModelSettings } from "@/types";
 
 interface ModelContextValue extends ModelSettings {
-  // Actions
   setModelType: (type: ModelType) => void;
   setPinacCloudModel: (model: PinacCloudModel) => void;
   setOllamaModel: (model: string | null) => void;
   setWebSearch: (enabled: boolean) => void;
-  
-  // Helper to get current model name
+
   getCurrentModelName: () => string;
 }
-
-// ============================================================================
-// CONSTANTS
-// ============================================================================
 
 const STORAGE_KEYS = {
   MODEL_TYPE: "model-type",
@@ -29,15 +29,7 @@ const DEFAULT_SETTINGS: ModelSettings = {
   webSearch: false,
 };
 
-// ============================================================================
-// CONTEXT CREATION
-// ============================================================================
-
 const ModelContext = createContext<ModelContextValue | null>(null);
-
-// ============================================================================
-// PROVIDER COMPONENT
-// ============================================================================
 
 interface ModelProviderProps {
   children: React.ReactNode;
@@ -50,16 +42,23 @@ export const ModelProvider: React.FC<ModelProviderProps> = ({ children }) => {
     return (stored as ModelType) || DEFAULT_SETTINGS.modelType;
   });
 
-  const [pinacCloudModel, setPinacCloudModelState] = useState<PinacCloudModel>(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.PINAC_CLOUD_MODEL);
-    return (stored as PinacCloudModel) || DEFAULT_SETTINGS.pinacCloudModel;
-  });
+  const [pinacCloudModel, setPinacCloudModelState] = useState<PinacCloudModel>(
+    () => {
+      const stored = localStorage.getItem(STORAGE_KEYS.PINAC_CLOUD_MODEL);
+      return (stored as PinacCloudModel) || DEFAULT_SETTINGS.pinacCloudModel;
+    },
+  );
 
   const [ollamaModel, setOllamaModelState] = useState<string | null>(() => {
-    return localStorage.getItem(STORAGE_KEYS.OLLAMA_MODEL) || DEFAULT_SETTINGS.ollamaModel;
+    return (
+      localStorage.getItem(STORAGE_KEYS.OLLAMA_MODEL) ||
+      DEFAULT_SETTINGS.ollamaModel
+    );
   });
 
-  const [webSearch, setWebSearch] = useState<boolean>(DEFAULT_SETTINGS.webSearch);
+  const [webSearch, setWebSearch] = useState<boolean>(
+    DEFAULT_SETTINGS.webSearch,
+  );
 
   // Persist model type to localStorage
   useEffect(() => {
@@ -122,26 +121,22 @@ export const ModelProvider: React.FC<ModelProviderProps> = ({ children }) => {
   };
 
   return (
-    <ModelContext.Provider value={value}>
-      {children}
-    </ModelContext.Provider>
+    <ModelContext.Provider value={value}>{children}</ModelContext.Provider>
   );
 };
 
-// ============================================================================
-// CUSTOM HOOK
-// ============================================================================
-
+//    CUSTOM HOOK
+// ---------------------
 /**
  * Hook to access model settings context
  * @throws Error if used outside ModelProvider
  */
 export const useModelContext = (): ModelContextValue => {
   const context = useContext(ModelContext);
-  
+
   if (!context) {
     throw new Error("useModelContext must be used within ModelProvider");
   }
-  
+
   return context;
 };

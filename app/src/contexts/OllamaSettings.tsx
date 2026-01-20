@@ -43,7 +43,7 @@ export const OllamaSettingsProvider: React.FC<OllamaSettingsProviderProps> = ({
     localStorage.setItem("ollama-temperature", temperature.toString());
     localStorage.setItem(
       "ollama-max-output-tokens",
-      maxOutputTokens.toString()
+      maxOutputTokens.toString(),
     );
     localStorage.setItem("ollama-top-k", topK.toString());
     localStorage.setItem("ollama-top-p", topP.toString());

@@ -14,7 +14,9 @@ interface ModalBoxProviderProps {
   children: ReactNode;
 }
 
-export const ModalBoxProvider: React.FC<ModalBoxProviderProps> = ({ children }) => {
+export const ModalBoxProvider: React.FC<ModalBoxProviderProps> = ({
+  children,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ModalContentType>(null);
 

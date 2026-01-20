@@ -1,8 +1,8 @@
 import { useCallback, useRef } from "react";
-import { useChatContext } from "../contexts/ChatContext";
-import { useModelContext } from "../contexts/ModelContext";
-import { useAttachmentContext } from "../contexts/AttachmentContext";
-import { useUIContext } from "../contexts/UIContext";
+import { useChatContext } from "@/contexts/ChatContext";
+import { useModelContext } from "@/contexts/ModelContext";
+import { useAttachmentContext } from "@/contexts/AttachmentContext";
+import { useUIContext } from "@/contexts/UIContext";
 import {
   useChatStream,
   startChatStream,
@@ -195,7 +195,9 @@ export const useChatActions = (): UseChatActionsReturn => {
 
       // Prepare API request
       const provider: ModelProvider =
-        model.getCurrentModelName() === "Pinac Cloud Model" ? "pinac-cloud" : "ollama";
+        model.getCurrentModelName() === "Pinac Cloud Model"
+          ? "pinac-cloud"
+          : "ollama";
 
       const apiMessages = convertToApiMessages(chat.messages);
 

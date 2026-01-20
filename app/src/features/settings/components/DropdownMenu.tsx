@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useModelContext } from "../../../contexts";
+import { useModelContext } from "@/contexts";
 
 // Icon
 import { IoIosArrowDown } from "react-icons/io";

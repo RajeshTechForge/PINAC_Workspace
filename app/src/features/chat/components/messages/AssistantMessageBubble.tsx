@@ -1,5 +1,8 @@
 import React, { useState, useCallback, memo } from "react";
-import { LiveMarkdownRenderer, MarkdownRenderer } from "@/features/chat/components/markdown/MarkdownRenderer";
+import {
+  LiveMarkdownRenderer,
+  MarkdownRenderer,
+} from "@/features/chat/components/markdown/MarkdownRenderer";
 
 // Icons
 import pinacLogo from "@/assets/icon/Round App Logo.svg";
@@ -8,147 +11,141 @@ import { FaCheck } from "react-icons/fa6";
 import { BiLike, BiSolidLike, BiDislike, BiSolidDislike } from "react-icons/bi";
 import { GrPowerCycle } from "react-icons/gr";
 
-
 interface AssistantMessageBubbleProps {
   content: string;
   modelName: string;
   isStreaming?: boolean;
 }
 
+export const AssistantMessageBubble: React.FC<AssistantMessageBubbleProps> =
+  memo(({ content, modelName, isStreaming = false }) => {
+    // Local UI state
+    const [isCopied, setIsCopied] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isDisliked, setIsDisliked] = useState(false);
 
-export const AssistantMessageBubble: React.FC<AssistantMessageBubbleProps> = memo(({
-  content,
-  modelName,
-  isStreaming = false,
-}) => {
-  // Local UI state
-  const [isCopied, setIsCopied] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isDisliked, setIsDisliked] = useState(false);
+    /**
+     * Copy message content to clipboard
+     */
+    const handleCopy = useCallback(async () => {
+      try {
+        await navigator.clipboard.writeText(content);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (error) {
+        console.error("Failed to copy to clipboard:", error);
+      }
+    }, [content]);
 
-  /**
-   * Copy message content to clipboard
-   */
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
-    }
-  }, [content]);
+    /**
+     * Toggle like state
+     */
+    const handleLike = useCallback(() => {
+      setIsLiked((prev) => !prev);
+      setIsDisliked(false);
+    }, []);
 
-  /**
-   * Toggle like state
-   */
-  const handleLike = useCallback(() => {
-    setIsLiked(prev => !prev);
-    setIsDisliked(false);
-  }, []);
+    /**
+     * Toggle dislike state
+     */
+    const handleDislike = useCallback(() => {
+      setIsDisliked((prev) => !prev);
+      setIsLiked(false);
+    }, []);
 
-  /**
-   * Toggle dislike state
-   */
-  const handleDislike = useCallback(() => {
-    setIsDisliked(prev => !prev);
-    setIsLiked(false);
-  }, []);
+    /**
+     * Regenerate response (TODO: Implement)
+     */
+    const handleRegenerate = useCallback(() => {
+      // TODO: Implement regeneration logic
+      console.log("Regenerate clicked");
+    }, []);
 
-  /**
-   * Regenerate response (TODO: Implement)
-   */
-  const handleRegenerate = useCallback(() => {
-    // TODO: Implement regeneration logic
-    console.log("Regenerate clicked");
-  }, []);
-
-  return (
-    <div className="flex justify-start mt-6">
-      {/* Avatar */}
-      <div className="size-[35px] mt-1 rounded-full dark:border-[1.5px] dark:border-gray-500 flex justify-center items-center flex-shrink-0">
-        <img src={pinacLogo} alt="AI Avatar" />
-      </div>
-
-      {/* Message content */}
-      <div className="w-full px-4 text-base text-black dark:text-gray-200">
-        {/* Model name */}
-        <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">
-          {modelName}
+    return (
+      <div className="flex justify-start mt-6">
+        {/* Avatar */}
+        <div className="size-[35px] mt-1 rounded-full dark:border-[1.5px] dark:border-gray-500 flex justify-center items-center flex-shrink-0">
+          <img src={pinacLogo} alt="AI Avatar" />
         </div>
 
-        {/* Rendered markdown */}
-        {isStreaming ? (
-          <LiveMarkdownRenderer text={content} />
-        ) : (
-          <MarkdownRenderer text={content} />
-        )}
+        {/* Message content */}
+        <div className="w-full px-4 text-base text-black dark:text-gray-200">
+          {/* Model name */}
+          <div className="text-sm text-gray-600 dark:text-gray-500 mb-1">
+            {modelName}
+          </div>
 
-        {/* Action buttons - only show when not streaming */}
-        {!isStreaming && (
-          <div className="flex gap-1">
-            {/* Copy button */}
-            <ActionButton
-              onClick={handleCopy}
-              tooltip={isCopied ? "Copied!" : "Copy"}
-              ariaLabel="Copy message"
-            >
-              {isCopied ? (
-                <FaCheck className="size-5" />
-              ) : (
-                <FiCopy className="size-5" />
-              )}
-            </ActionButton>
+          {/* Rendered markdown */}
+          {isStreaming ? (
+            <LiveMarkdownRenderer text={content} />
+          ) : (
+            <MarkdownRenderer text={content} />
+          )}
 
-            {/* Like/Dislike buttons */}
-            <div className="flex mt-3 rounded-md border border-gray-300 dark:border-zinc-700">
+          {/* Action buttons - only show when not streaming */}
+          {!isStreaming && (
+            <div className="flex gap-1">
+              {/* Copy button */}
               <ActionButton
-                onClick={handleLike}
-                tooltip="Like"
-                ariaLabel="Like message"
-                className="pr-0.5"
+                onClick={handleCopy}
+                tooltip={isCopied ? "Copied!" : "Copy"}
+                ariaLabel="Copy message"
               >
-                {isLiked ? (
-                  <BiSolidLike className="size-5" />
+                {isCopied ? (
+                  <FaCheck className="size-5" />
                 ) : (
-                  <BiLike className="size-5" />
+                  <FiCopy className="size-5" />
                 )}
               </ActionButton>
 
+              {/* Like/Dislike buttons */}
+              <div className="flex mt-3 rounded-md border border-gray-300 dark:border-zinc-700">
+                <ActionButton
+                  onClick={handleLike}
+                  tooltip="Like"
+                  ariaLabel="Like message"
+                  className="pr-0.5"
+                >
+                  {isLiked ? (
+                    <BiSolidLike className="size-5" />
+                  ) : (
+                    <BiLike className="size-5" />
+                  )}
+                </ActionButton>
+
+                <ActionButton
+                  onClick={handleDislike}
+                  tooltip="Dislike"
+                  ariaLabel="Dislike message"
+                  className="pl-1"
+                >
+                  {isDisliked ? (
+                    <BiSolidDislike className="size-5" />
+                  ) : (
+                    <BiDislike className="size-5" />
+                  )}
+                </ActionButton>
+              </div>
+
+              {/* Regenerate button */}
               <ActionButton
-                onClick={handleDislike}
-                tooltip="Dislike"
-                ariaLabel="Dislike message"
-                className="pl-1"
+                onClick={handleRegenerate}
+                tooltip="Regenerate"
+                ariaLabel="Regenerate response"
               >
-                {isDisliked ? (
-                  <BiSolidDislike className="size-5" />
-                ) : (
-                  <BiDislike className="size-5" />
-                )}
+                <GrPowerCycle className="size-5" />
               </ActionButton>
             </div>
-
-            {/* Regenerate button */}
-            <ActionButton
-              onClick={handleRegenerate}
-              tooltip="Regenerate"
-              ariaLabel="Regenerate response"
-            >
-              <GrPowerCycle className="size-5" />
-            </ActionButton>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 AssistantMessageBubble.displayName = "AssistantMessageBubble";
 
-// ============================================================================
-// HELPER COMPONENTS
-// ============================================================================
+//    HELPER COMPONENTS
+// -------------------------
 
 interface ActionButtonProps {
   onClick: () => void;
@@ -181,7 +178,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       >
         {tooltip}
       </span>
-      
+
       {/* Icon */}
       <span className="flex items-center justify-center text-gray-600 dark:text-gray-400">
         {children}

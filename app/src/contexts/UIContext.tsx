@@ -1,15 +1,11 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-// ============================================================================
-// CONTEXT TYPE DEFINITIONS
-// ============================================================================
-
 interface UIContextValue {
   // State
   isWelcomeVisible: boolean;
   inputText: string;
   isInputDisabled: boolean;
-  
+
   // Actions
   setWelcomeVisible: (visible: boolean) => void;
   setInputText: (text: string) => void;
@@ -17,15 +13,7 @@ interface UIContextValue {
   resetInput: () => void;
 }
 
-// ============================================================================
-// CONTEXT CREATION
-// ============================================================================
-
 const UIContext = createContext<UIContextValue | null>(null);
-
-// ============================================================================
-// PROVIDER COMPONENT
-// ============================================================================
 
 interface UIProviderProps {
   children: React.ReactNode;
@@ -53,27 +41,18 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     resetInput,
   };
 
-  return (
-    <UIContext.Provider value={value}>
-      {children}
-    </UIContext.Provider>
-  );
+  return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
 };
 
-// ============================================================================
-// CUSTOM HOOK
-// ============================================================================
+//    CUSTOM HOOK
+// ---------------------
 
-/**
- * Hook to access UI state context
- * @throws Error if used outside UIProvider
- */
 export const useUIContext = (): UIContextValue => {
   const context = useContext(UIContext);
-  
+
   if (!context) {
     throw new Error("useUIContext must be used within UIProvider");
   }
-  
+
   return context;
 };

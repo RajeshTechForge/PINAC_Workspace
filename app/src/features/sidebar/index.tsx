@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ChatHistory } from "@/features/history";
-import { ModalBoxContext } from "../../contexts/ModalBox";
+import { ModalBoxContext } from "@/contexts/ModalBox";
 import { Tooltip } from "./components/Tooltip";
 import { cn } from "@/lib/utils";
 

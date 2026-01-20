@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useModelContext, useAttachmentContext } from "@/contexts";
-import { promptsData } from "@/data/prompts"; // Prompts data
+import { promptsData } from "@/data/prompts";
 
 // icons
 import { GoGlobe } from "react-icons/go";

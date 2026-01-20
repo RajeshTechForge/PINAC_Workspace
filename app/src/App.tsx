@@ -7,7 +7,6 @@ import SignInPage from "./pages/SignIn";
 import { FrameHeader } from "./components/FrameHeader";
 import "./index.css";
 
-// Route for Login page (redirects if already authenticated)
 const AuthRoute = ({ children }: { children: JSX.Element }) => {
   const auth = useContext(AuthContext);
   if (auth?.isAuthenticated) {
