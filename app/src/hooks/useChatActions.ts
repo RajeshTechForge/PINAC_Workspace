@@ -197,7 +197,13 @@ export const useChatActions = (): UseChatActionsReturn => {
       const provider = modelSettings.selectedProviderId;
       const modelId = modelSettings.selectedModelId;
 
-      const apiMessages = convertToApiMessages(chat.messages);
+      // Build messages array directly instead of using stale chat.messages state
+      // This ensures the current user message is included
+      const existingMessages = convertToApiMessages(chat.messages);
+      const apiMessages: Message[] = [
+        ...existingMessages,
+        { role: "user", content },
+      ];
 
       const currentSettings = modelSettings.getCurrentSettings();
 

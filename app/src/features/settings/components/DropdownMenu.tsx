@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useModelSettings } from "@/contexts";
-import {
-  getProviderByDisplayName,
-  getModelByDisplayName,
-} from "@/config/models";
+import { getProviderByDisplayName } from "@/config/models";
 
 // Icon
 import { IoIosArrowDown } from "react-icons/io";
@@ -13,12 +10,14 @@ interface DropdownMenuProps {
   defaultOption: string | null;
   optionList: Array<string>;
   valueName?: "provider" | "model";
+  disabled?: boolean;
 }
 
 export const DropdownMenu: React.FC<DropdownMenuProps> = ({
   defaultOption,
   optionList,
   valueName,
+  disabled = false,
 }) => {
   const modelSettings = useModelSettings();
   const [selectedOption, setSelectedOption] = useState(defaultOption);
@@ -26,7 +25,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
   const onClick = (option: string) => {
-    if (!valueName) return;
+    if (!valueName || disabled) return;
 
     if (valueName === "provider") {
       // User selected a provider by display name
@@ -36,10 +35,11 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
       }
     } else if (valueName === "model") {
       // User selected a model by display name
-      const model = getModelByDisplayName(
+      // For dynamic providers, find the model from available models
+      const availableModels = modelSettings.getAvailableModels(
         modelSettings.selectedProviderId,
-        option,
       );
+      const model = availableModels.find((m) => m.displayName === option);
       if (model) {
         modelSettings.setSelectedModel(model.id);
       }
@@ -84,14 +84,15 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
   return (
     <div className="w-full text-gray-200" ref={dropdownMenuRef}>
       <div
-        className="w-64 h-9 pl-2 flex items-center justify-between rounded-lg
-        bg-gray-700 dark:bg-tertiary-dark"
+        className={`w-64 h-9 pl-2 flex items-center justify-between rounded-lg
+        bg-gray-700 dark:bg-tertiary-dark ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         <span>{selectedOption || "Not Selected"}</span>
         <button
-          className="h-full pl-2.5 pr-3 flex items-center justify-center rounded-r-lg
-          hover:bg-gray-600 dark:hover:bg-zinc-600 cursor-pointer"
-          onClick={() => setIsActive(!isActive)}
+          className={`h-full pl-2.5 pr-3 flex items-center justify-center rounded-r-lg
+          ${disabled ? "cursor-not-allowed" : "hover:bg-gray-600 dark:hover:bg-zinc-600 cursor-pointer"}`}
+          onClick={() => !disabled && setIsActive(!isActive)}
+          disabled={disabled}
         >
           {isActive ? <IoIosArrowUp size={24} /> : <IoIosArrowDown size={24} />}
         </button>

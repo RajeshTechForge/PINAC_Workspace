@@ -10,6 +10,7 @@ export interface ModelProviderConfig {
   displayName: string;
   models: ModelConfig[];
   defaultSettings?: Record<string, any>;
+  isDynamic?: boolean; // Flag to indicate if models are fetched dynamically
 }
 
 export interface ModelConfig {
@@ -57,24 +58,10 @@ export const MODEL_PROVIDERS: Record<string, ModelProviderConfig> = {
     id: "ollama",
     name: "ollama",
     displayName: "Ollama",
+    isDynamic: true, // Models are fetched dynamically
     models: [
-      // Ollama models are fetched dynamically from the Ollama server
-      // This list serves as fallback/examples
-      {
-        id: "llama2",
-        name: "llama2",
-        displayName: "Llama 2",
-      },
-      {
-        id: "mistral",
-        name: "mistral",
-        displayName: "Mistral",
-      },
-      {
-        id: "codellama",
-        name: "codellama",
-        displayName: "Code Llama",
-      },
+      // Placeholder models - will be replaced by dynamically fetched models
+      // These serve as fallback if Ollama is not available
     ],
     defaultSettings: {
       temperature: 0.7,
@@ -127,6 +114,18 @@ export const getProviderByDisplayName = (
  */
 export const getModelsForProvider = (providerId: string): ModelConfig[] => {
   return MODEL_PROVIDERS[providerId]?.models || [];
+};
+
+/**
+ * Update models for a specific provider (used for dynamic providers like Ollama)
+ */
+export const updateProviderModels = (
+  providerId: string,
+  models: ModelConfig[],
+): void => {
+  if (MODEL_PROVIDERS[providerId]) {
+    MODEL_PROVIDERS[providerId].models = models;
+  }
 };
 
 /**
