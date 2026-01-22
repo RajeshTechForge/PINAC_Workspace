@@ -1,3 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Crawl4AI cache
+.crawl4ai/
+
+# OS
+Thumbs.db
+
 # Logs
 logs
 *.log
@@ -14,13 +68,6 @@ dist-electron
 release
 *.local
 
-# python backend
-.venv
-build
-__pycache__
-resources
-vector_stores
-
 # Editor directories and files
 .vscode/
 !.vscode/extensions.json
@@ -32,9 +79,10 @@ vector_stores
 *.sln
 *.sw?
 
-# secret
-.env
-.env.local
-
 # cache
 extracted_cache.json
+
+# Environment
+.env
+.env.local
+.env.*.local

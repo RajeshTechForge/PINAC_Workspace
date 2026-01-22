@@ -1,19 +1,37 @@
 [project]
 name = "pinac_workspace_backend"
-version = "3.0.0"
-description = "Backend for Pinac Workspace"
+version = "3.0.1"
+description = "Python backend server for Pinac Workspace"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.128.0",
-    "langchain-community>=0.4.1",
-    "langchain-huggingface>=1.2.0",
-    "langchain-text-splitters>=1.1.0",
-    "ollama>=0.6.1",
+    "pip>=25.3",
+    "fastapi>=0.115.0",
+    "crawl4ai>=0.4.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
     "uvicorn>=0.40.0",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.11",
+    "ruff>=0.14.13",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
