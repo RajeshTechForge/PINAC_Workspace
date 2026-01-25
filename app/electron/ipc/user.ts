@@ -12,7 +12,7 @@ export const registerUserHandlers = () => {
       const { displayName, nickname, email } = userInfo;
       fs.writeFileSync(
         userInfoFile,
-        JSON.stringify({ displayName, nickname, email })
+        JSON.stringify({ displayName, nickname, email }),
       );
 
       event.reply("backend-response", {

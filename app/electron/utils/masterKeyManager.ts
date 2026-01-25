@@ -6,37 +6,25 @@ import { app } from "electron";
 class SecureMasterKeyManager {
   private static readonly KEY_FILE_NAME = "app-secret.key";
 
-  /**
-   * Generates a cryptographically secure random master key
-   * @param length Length of the key in bytes (default: 64 bytes = 512 bits)
-   * @returns Hex-encoded random key
-   */
+  // Generates a cryptographically secure random master key
   static generateMasterKey(length: number = 64): string {
     return crypto.randomBytes(length).toString("hex");
   }
 
-  /**
-   * Gets or creates a persistent master key for the application
-   * @returns Persistent master key
-   */
+  // Gets or creates a persistent master key for the application
   static getPersistentMasterKey(): string {
     const userDataPath = app.getPath("userData");
     const keyFilePath = path.join(userDataPath, this.KEY_FILE_NAME);
 
     try {
       if (fs.existsSync(keyFilePath)) {
-        // Read existing key
         return fs.readFileSync(keyFilePath, "utf8").trim();
       }
 
-      // Generate a new key
       const newMasterKey = this.generateMasterKey();
-
       fs.mkdirSync(userDataPath, { recursive: true });
-
-      // Write key with restricted permissions
       fs.writeFileSync(keyFilePath, newMasterKey, {
-        mode: 0o600, // Read/write only for the owner
+        mode: 0o600,
         encoding: "utf8",
       });
 

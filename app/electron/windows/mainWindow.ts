@@ -29,14 +29,13 @@ const saveSize = (width: number, height: number): void => {
 export const createMainWindow = (
   preloadPath: string,
   rendererDist: string,
-  devServerUrl?: string
+  devServerUrl?: string,
 ): BrowserWindow => {
   const savedSize = getSavedSize();
   const defaultSize = getDefaultSize();
 
   const { width, height } = savedSize || defaultSize;
 
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -53,11 +52,10 @@ export const createMainWindow = (
     },
   });
 
-  // Test active push message to Renderer-process.
   mainWindow.webContents.on("did-finish-load", () => {
     mainWindow?.webContents.send(
       "main-process-message",
-      new Date().toLocaleString()
+      new Date().toLocaleString(),
     );
   });
 

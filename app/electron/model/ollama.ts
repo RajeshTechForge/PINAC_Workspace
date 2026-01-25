@@ -3,15 +3,6 @@ import { Message } from "@/types";
 
 const ollama = new Ollama({ host: "http://localhost:11434" });
 
-/**
- * Stream chat response from Ollama
- * @param model - The model name (e.g., "llama3.2", "mistral")
- * @param messages - Array of chat messages
- * @param onChunk - Callback for each streaming chunk
- * @param onDone - Callback when stream is complete
- * @param onError - Callback for errors
- * @param signal - AbortSignal to cancel the stream
- */
 export async function streamChatResponse(
   model: string,
   messages: Message[],
@@ -53,12 +44,6 @@ export async function streamChatResponse(
   }
 }
 
-/**
- * Get non-streaming chat response from Ollama
- * @param model - The model name
- * @param messages - Array of chat messages
- * @returns The complete response text
- */
 export async function getChatResponse(
   model: string,
   messages: Message[],

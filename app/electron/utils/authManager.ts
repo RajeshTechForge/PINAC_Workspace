@@ -25,5 +25,5 @@ export const refreshIdToken = async (tokenManager: SecureTokenManager) => {
     console.error(response.statusText);
   }
   const data = await response.json();
-  tokenManager.storeToken("idToken", data.id_token); // This saves the new ID token
+  tokenManager.storeToken("idToken", data.id_token);
 };

@@ -2,7 +2,7 @@ import { ipcMain, dialog, BrowserWindow } from "electron";
 import SecureMasterKeyManager from "../utils/masterKeyManager";
 import SecureTokenManager from "../utils/tokenManager";
 
-export const registerAuthHandlers = (mainWindow: BrowserWindow | null) => {
+export const registerAuthHandlers = () => {
   ipcMain.handle("check-auth", async () => {
     try {
       const masterKey = SecureMasterKeyManager.getPersistentMasterKey();
@@ -27,14 +27,17 @@ export const registerAuthHandlers = (mainWindow: BrowserWindow | null) => {
   });
 };
 
-export const handleDeepLink = async (url: string, mainWindow: BrowserWindow | null) => {
+export const handleDeepLink = async (
+  url: string,
+  mainWindow: BrowserWindow | null,
+) => {
   const urlObj = new URL(url);
   const encodedData = urlObj.searchParams.get("data");
-  
+
   if (!encodedData) {
     dialog.showErrorBox(
       "Error",
-      "Something went wrong, unable to authenticate. Please try again."
+      "Something went wrong, unable to authenticate. Please try again.",
     );
     return;
   }
@@ -53,7 +56,10 @@ export const handleDeepLink = async (url: string, mainWindow: BrowserWindow | nu
       if (email) tokenManager.storeToken("userEmail", email);
 
       if (mainWindow) {
-        mainWindow.webContents.send("auth-success", "Authentication successful");
+        mainWindow.webContents.send(
+          "auth-success",
+          "Authentication successful",
+        );
         mainWindow.reload();
       }
     } else {
@@ -63,7 +69,7 @@ export const handleDeepLink = async (url: string, mainWindow: BrowserWindow | nu
     console.error("Deep link handling error:", error);
     dialog.showErrorBox(
       "Error",
-      "Something went wrong during authentication. Please try again."
+      "Something went wrong during authentication. Please try again.",
     );
   }
 };
