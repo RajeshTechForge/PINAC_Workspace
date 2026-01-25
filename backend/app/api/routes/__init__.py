@@ -7,7 +7,6 @@ from .search import router as search_router
 
 api_router = APIRouter()
 
-# Include all routes
 api_router.include_router(health_router)
 api_router.include_router(search_router)
 

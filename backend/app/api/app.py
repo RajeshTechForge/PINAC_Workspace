@@ -20,8 +20,6 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Handle startup and shutdown events."""
-
     logger.info(f"Starting {settings.app_name} v{settings.app_version}")
     logger.info(f"Environment: {settings.environment}")
 
@@ -35,13 +33,11 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Shutdown
     logger.info("Shutting down application")
     await cleanup_search_service()
     logger.info("Services cleaned up")
 
 
-# Create FastAPI application
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
@@ -50,7 +46,6 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-# Setup CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -62,13 +57,11 @@ app.add_middleware(
 # Setup logging middleware
 app.add_middleware(RequestLoggingMiddleware)
 
-# Include API routes
 app.include_router(api_router, prefix="/api")
 
 
 @app.get("/", tags=["root"])
 async def root():
-    """Root endpoint with API information."""
     return {
         "name": settings.app_name,
         "version": settings.app_version,

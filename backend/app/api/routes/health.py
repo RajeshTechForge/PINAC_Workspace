@@ -7,6 +7,7 @@ from fastapi import APIRouter, status
 from app.api.schemas import HealthResponse
 from app.config import settings
 
+
 router = APIRouter(prefix="/health", tags=["health"])
 
 
@@ -18,12 +19,6 @@ router = APIRouter(prefix="/health", tags=["health"])
     description="Check the health status of the API",
 )
 async def health_check() -> HealthResponse:
-    """
-    Health check endpoint.
-
-    Returns:
-        HealthResponse: Health status information
-    """
     return HealthResponse(
         status="healthy",
         version=settings.app_version,
