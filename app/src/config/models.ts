@@ -38,19 +38,20 @@ export interface AdvancedSettings {
  * 3. That's it! Everything else updates automatically.
  */
 export const MODEL_PROVIDERS: Record<string, ModelProviderConfig> = {
-  "pinac-cloud": {
-    id: "pinac-cloud",
-    name: "pinac-cloud",
-    displayName: "Pinac Cloud",
+  custom: {
+    id: "custom",
+    name: "custom",
+    displayName: "Custom",
     models: [
       {
-        id: "base-model",
-        name: "base-model",
-        displayName: "Base Model",
+        id: "custom-model",
+        name: "custom-model",
+        displayName: "Default Model",
       },
     ],
     defaultSettings: {
-      webSearch: false,
+      subProvider: "openai",
+      modelName: "gpt-3.5-turbo",
     },
   },
 

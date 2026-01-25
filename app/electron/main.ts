@@ -8,6 +8,7 @@ import { registerUserHandlers } from "./ipc/user";
 import { registerFileHandlers } from "./ipc/file";
 import { registerWindowHandlers } from "./ipc/window";
 import { registerAiHandlers } from "./ipc/ai";
+import { registerSettingsHandlers } from "./ipc/settings";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -23,6 +24,7 @@ let mainWindow: BrowserWindow | null = null;
 registerUserHandlers();
 registerFileHandlers();
 registerAiHandlers();
+registerSettingsHandlers();
 
 const initWindow = () => {
   mainWindow = createMainWindow(
