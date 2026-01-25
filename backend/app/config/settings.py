@@ -40,12 +40,6 @@ class Settings(BaseSettings):
         default="INFO", description="Logging level"
     )
 
-    # Web Search Settings
-    web_search_max_results: int = Field(default=10, description="Maximum search results")
-    web_search_timeout: int = Field(default=60, description="Search timeout in seconds")
-    crawl4ai_verbose: bool = Field(default=False, description="Crawl4AI verbose mode")
-    crawl4ai_max_concurrent: int = Field(default=5, description="Max concurrent crawls")
-
     # Internal parsed values
     _allowed_origins_list: list[str] = []
 
