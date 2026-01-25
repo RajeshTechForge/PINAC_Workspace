@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useModelSettings } from "@/contexts";
+import {
+  CUSTOM_PROVIDERS,
+  getCustomModelsForProvider,
+} from "@/config/customProviders";
 
 export const AdvancedSettings: React.FC = () => {
   const modelSettings = useModelSettings();
@@ -54,8 +58,8 @@ export const AdvancedSettings: React.FC = () => {
     try {
       if (window.ipcRenderer) {
         const config = {
-          subProvider: settings.subProvider || "openai",
-          modelName: settings.modelName || "gpt-3.5-turbo",
+          subProvider: settings.subProvider || CUSTOM_PROVIDERS[0].id,
+          modelName: settings.modelName || CUSTOM_PROVIDERS[0].models[0],
           apiKey: customApiKey,
         };
         await window.ipcRenderer.invoke("save-custom-provider-config", config);
@@ -66,19 +70,6 @@ export const AdvancedSettings: React.FC = () => {
       console.error(error);
     }
     setTimeout(() => setSaveStatus(""), 2000);
-  };
-
-  const getModelsForSubProvider = (subProvider: string) => {
-    switch (subProvider) {
-      case "openai":
-        return ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"];
-      case "gemini":
-        return ["gemini-pro", "gemini-ultra"];
-      case "claude":
-        return ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"];
-      default:
-        return ["default-model"];
-    }
   };
 
   // Render different settings based on provider
@@ -160,8 +151,8 @@ export const AdvancedSettings: React.FC = () => {
         );
 
       case "custom": {
-        const subProvider = settings.subProvider || "openai";
-        const models = getModelsForSubProvider(subProvider);
+        const subProvider = settings.subProvider || CUSTOM_PROVIDERS[0].id;
+        const models = getCustomModelsForProvider(subProvider);
         const currentModel = settings.modelName || models[0];
 
         return (
@@ -180,13 +171,15 @@ export const AdvancedSettings: React.FC = () => {
                   const newProvider = e.target.value;
                   handleChange("subProvider", newProvider);
                   // Reset model when provider changes
-                  const newModels = getModelsForSubProvider(newProvider);
+                  const newModels = getCustomModelsForProvider(newProvider);
                   handleChange("modelName", newModels[0]);
                 }}
               >
-                <option value="openai">OpenAI</option>
-                <option value="gemini">Gemini</option>
-                <option value="claude">Claude</option>
+                {CUSTOM_PROVIDERS.map((provider) => (
+                  <option key={provider.id} value={provider.id}>
+                    {provider.name}
+                  </option>
+                ))}
               </select>
             </div>
 
