@@ -17,12 +17,10 @@ export const useChatStream = (
   const { onData, onError, onDone } = handlers;
   const isListeningRef = useRef(false);
 
-  // Use refs to avoid recreating listeners when callbacks change
   const onDataRef = useRef(onData);
   const onErrorRef = useRef(onError);
   const onDoneRef = useRef(onDone);
 
-  // Update refs when callbacks change
   useEffect(() => {
     onDataRef.current = onData;
     onErrorRef.current = onError;
@@ -30,7 +28,6 @@ export const useChatStream = (
   }, [onData, onError, onDone]);
 
   useEffect(() => {
-    // Event handler wrappers that use current refs
     const handleData = (_event: any, chunk: ChatStreamChunk) => {
       onDataRef.current(chunk);
     };
@@ -59,14 +56,13 @@ export const useChatStream = (
 
     isListeningRef.current = true;
 
-    // Cleanup function
     return () => {
       removeDataListener();
       removeErrorListener();
       removeDoneListener();
       isListeningRef.current = false;
     };
-  }, []); // Empty deps - listeners use refs that are always current
+  }, []);
 
   return {
     isListening: isListeningRef.current,

@@ -21,7 +21,6 @@ const generateSessionId = (): string => {
   return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 };
 
-// Convert UI messages to API message format
 const convertToApiMessages = (messages: UIMessage[]): Message[] => {
   return messages
     .filter((msg) => msg.role === "user" || msg.role === "assistant")
@@ -41,7 +40,6 @@ export const useChatActions = (): UseChatActionsReturn => {
   const streamingMessageRef = useRef<string | null>(null);
   const streamingContentRef = useRef<string>("");
 
-  // Save a message to the database
   const saveMessageToDatabase = useCallback(
     async (
       messageId: number,
@@ -52,17 +50,13 @@ export const useChatActions = (): UseChatActionsReturn => {
     ) => {
       let currentSessionId = chat.sessionId;
 
-      // Create new session if none exists
       if (!currentSessionId) {
         currentSessionId = generateSessionId();
         chat.setSessionId(currentSessionId);
 
-        // Create session with first 50 chars of user message as title
         const title = content.slice(0, 50);
         await startNewSession(currentSessionId, title);
       }
-
-      // Add message to session
       await addMsgToSession(
         currentSessionId,
         messageId,
@@ -79,10 +73,7 @@ export const useChatActions = (): UseChatActionsReturn => {
     (chunk: any) => {
       if (!streamingMessageRef.current || !chunk.content) return;
 
-      // Append content to streaming buffer
       streamingContentRef.current += chunk.content;
-
-      // Update the UI message
       chat.updateMessage(streamingMessageRef.current, {
         content: streamingContentRef.current,
         isStreaming: !chunk.done,
@@ -100,12 +91,10 @@ export const useChatActions = (): UseChatActionsReturn => {
     const content = streamingContentRef.current;
     const modelName = modelSettings.getCurrentModelName();
 
-    // Mark as complete
     chat.updateMessage(streamingMessageRef.current, {
       isStreaming: false,
     });
 
-    // Save to database
     await saveMessageToDatabase(messageId, "assistant", content, modelName);
 
     // Reset state
@@ -121,7 +110,6 @@ export const useChatActions = (): UseChatActionsReturn => {
 
       const errorMessage = `**Error:** ${error}\n\nPlease try again.`;
 
-      // Update message with error
       chat.updateMessage(streamingMessageRef.current, {
         content: errorMessage,
         isStreaming: false,
@@ -146,10 +134,8 @@ export const useChatActions = (): UseChatActionsReturn => {
   // Send a message to the AI
   const sendMessage = useCallback(
     async (content: string) => {
-      // Validate input
       if (!content.trim()) return;
 
-      // Disable input during processing
       ui.setInputDisabled(true);
       ui.setWelcomeVisible(false);
       chat.setIsStreaming(true);
@@ -163,7 +149,6 @@ export const useChatActions = (): UseChatActionsReturn => {
         attachment.markAttachmentAsUsed();
       }
 
-      // Add user message
       const userMessage = chat.addMessage({
         role: "user",
         content,
@@ -171,7 +156,6 @@ export const useChatActions = (): UseChatActionsReturn => {
         attachmentName,
       });
 
-      // Save user message to database
       const userMessageId = parseInt(userMessage.id.split("_")[1] || "0");
       await saveMessageToDatabase(
         userMessageId,
@@ -181,7 +165,6 @@ export const useChatActions = (): UseChatActionsReturn => {
         attachmentName,
       );
 
-      // Add placeholder AI message
       const aiMessage = chat.addMessage({
         role: "assistant",
         content: "",
@@ -189,7 +172,6 @@ export const useChatActions = (): UseChatActionsReturn => {
         isStreaming: true,
       });
 
-      // Set up streaming tracking
       streamingMessageRef.current = aiMessage.id;
       streamingContentRef.current = "";
 
@@ -197,8 +179,6 @@ export const useChatActions = (): UseChatActionsReturn => {
       const provider = modelSettings.selectedProviderId;
       const modelId = modelSettings.selectedModelId;
 
-      // Build messages array directly instead of using stale chat.messages state
-      // This ensures the current user message is included
       const existingMessages = convertToApiMessages(chat.messages);
       const apiMessages: Message[] = [
         ...existingMessages,
@@ -222,13 +202,11 @@ export const useChatActions = (): UseChatActionsReturn => {
       // Send request to main process
       startChatStream(request);
 
-      // Clear input
       ui.resetInput();
     },
     [chat, modelSettings, attachment, ui, saveMessageToDatabase],
   );
 
-  // Stop the current AI generation
   const stopGeneration = useCallback(async () => {
     if (!chat.isStreaming || !streamingMessageRef.current) return;
 
@@ -242,7 +220,6 @@ export const useChatActions = (): UseChatActionsReturn => {
       streamingContentRef.current || "[Generation stopped]";
     const modelName = modelSettings.getCurrentModelName();
 
-    // Update UI
     chat.updateMessage(streamingMessageRef.current, {
       content: partialContent,
       isStreaming: false,

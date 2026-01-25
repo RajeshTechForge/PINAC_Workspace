@@ -46,7 +46,7 @@ export const AdvancedSettings: React.FC = () => {
         setIsLoading(false);
       }
     }
-  }, [providerId]); // Removed modelSettings from deps to avoid loop
+  }, [providerId]);
 
   // Handle setting change
   const handleChange = (key: string, value: any) => {
@@ -170,7 +170,6 @@ export const AdvancedSettings: React.FC = () => {
                 onChange={(e) => {
                   const newProvider = e.target.value;
                   handleChange("subProvider", newProvider);
-                  // Reset model when provider changes
                   const newModels = getCustomModelsForProvider(newProvider);
                   handleChange("modelName", newModels[0]);
                 }}
