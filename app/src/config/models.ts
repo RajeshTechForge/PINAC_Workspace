@@ -131,7 +131,7 @@ export const getModelByDisplayName = (
 // ---------------------------------------
 
 export const DEFAULT_PROVIDER_ID = "custom";
-export const DEFAULT_MODEL_ID = "customom-model";
+export const DEFAULT_MODEL_ID = "custom-model";
 
 export const getDefaultProvider = (): ModelProviderConfig => {
   return MODEL_PROVIDERS[DEFAULT_PROVIDER_ID];
