@@ -5,31 +5,27 @@ export interface CustomProviderOption {
 }
 
 export const CUSTOM_PROVIDERS: CustomProviderOption[] = [
-  {
-    id: "openai",
-    name: "OpenAI",
-    models: ["gpt-5", "gpt-5-mini", "gpt-4o", "gpt-4o-mini"],
-  },
+  // {
+  //   id: "openai",
+  //   name: "OpenAI",
+  //   models: ["gpt-5", "gpt-5-mini", "gpt-4o", "gpt-4o-mini"],
+  // },
   {
     id: "gemini",
-    name: "Gemini",
+    name: "Gemini Gen AI",
     models: [
-      "gemini-3-pro",
-      "gemini-3-flash",
+      "gemini-3-pro-preview",
+      "gemini-3-flash-preview",
       "gemini-2.5-pro",
       "gemini-2.5-flash",
+      "gemini-2.5-flash-lite"
     ],
   },
-  {
-    id: "claude",
-    name: "Claude",
-    models: ["claude-4.5-opus", "claude-4.5-sonnet", "claude-4.5-haiku"],
-  },
-  {
-    id: "groq",
-    name: "Groq",
-    models: ["groq-4", "groq-3", "groq-3-mini"],
-  },
+  // {
+  //   id: "claude",
+  //   name: "Claude",
+  //   models: ["claude-4.5-opus", "claude-4.5-sonnet", "claude-4.5-haiku"],
+  // },
 ];
 
 export const getCustomProviderOptions = () => CUSTOM_PROVIDERS;
