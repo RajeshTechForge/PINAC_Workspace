@@ -56,6 +56,7 @@ class ChatRequest(BaseModel):
     api_key: str = Field(..., description="API Key for the provider")
     history: list[ChatMessage] = Field(default_factory=list, description="Chat history")
     query: str = Field(..., description="User's current query")
+    stream: bool = Field(False, description="Stream response")
 
 
 class ChatResponse(BaseModel):
