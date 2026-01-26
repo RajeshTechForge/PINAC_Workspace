@@ -1,27 +1,23 @@
 //          MESSAGE & CHAT TYPES
 // ----------------------------------------
 
-/** Supported message roles in a conversation */
 export type MessageRole = "user" | "assistant" | "system";
 
-/** Single message in a chat conversation */
 export interface Message {
   role: MessageRole;
   content: string;
 }
 
-/** Message stored in UI state with metadata */
 export interface UIMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: number;
-  modelName?: string;
+  modelName: string;
   attachmentName?: string;
   isStreaming?: boolean;
 }
 
-/** Message stored in database */
 export interface DatabaseMessage {
   id: number;
   role: string;
@@ -32,12 +28,8 @@ export interface DatabaseMessage {
 
 //        MODEL & SETTINGS TYPES
 // ----------------------------------------
-// Note: Provider and model configurations are centralized in /config/models.ts
-
-/** Supported AI model providers (derived from config) */
 export type ModelProvider = string;
 
-/** Current model selection */
 export interface SelectedModel {
   providerId: string;
   providerName: string;
@@ -45,22 +37,19 @@ export interface SelectedModel {
   modelName: string;
 }
 
-/** Per-provider advanced settings */
 export interface ProviderSettings {
   [providerId: string]: {
     temperature?: number;
     maxTokens?: number;
     topK?: number;
     topP?: number;
-    webSearch?: boolean;
-    [key: string]: any; // Allow custom settings per provider
+    [key: string]: any; // Allow custom settings for provider
   };
 }
 
 //        ATTACHMENT TYPES
 // ------------------------------------
 
-/** File attachment metadata */
 export interface FileAttachment {
   name: string;
   path: string;
@@ -71,25 +60,23 @@ export interface FileAttachment {
 //      API REQUEST/RESPONSE TYPES
 // -------------------------------------
 
-/** Unified chat request payload */
 export interface ChatRequest {
   prompt: string;
   messages: Message[];
   provider: ModelProvider;
-  model?: string; // Required for Ollama, ignored for Pinac Cloud
-  web_search?: boolean;
+  model: string;
+  web_search: boolean;
   rag?: boolean;
   documents_path?: string;
 }
 
-/** Streaming chunk response */
 export interface ChatStreamChunk {
   content?: string;
   done?: boolean;
   error?: string;
 }
 
-/** IPC Channel names for chat streaming */
+// IPC Channel names for chat streaming
 export type ChatStreamChannel =
   | "chat-stream-data"
   | "chat-stream-error"
@@ -98,7 +85,6 @@ export type ChatStreamChannel =
 //          DATABASE TYPES
 // --------------------------------------
 
-/** Chat session stored in IndexedDB */
 export interface ChatSession {
   id: string;
   timestamp: Date;
@@ -109,7 +95,6 @@ export interface ChatSession {
 //        UI STATE TYPES
 // --------------------------------------
 
-/** Chat UI state */
 export interface ChatState {
   messages: UIMessage[];
   sessionId: string | null;
@@ -117,19 +102,16 @@ export interface ChatState {
   inputText: string;
 }
 
-/** Loading state for async operations */
 export type LoadingState = "idle" | "loading" | "success" | "error";
 
 //    IPC TYPES (Renderer ↔ Main Process)
 // -------------------------------------------
 
-/** IPC events for renderer process */
 export interface IpcRendererEvents {
   "start-chat-stream": ChatRequest;
   "stop-chat-stream": void;
 }
 
-/** IPC event handlers from main process */
 export interface IpcMainEvents {
   "chat-stream-data": (chunk: ChatStreamChunk) => void;
   "chat-stream-error": (error: string) => void;

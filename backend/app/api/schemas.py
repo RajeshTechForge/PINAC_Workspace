@@ -1,6 +1,6 @@
 """API schemas for all endpoints."""
 
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
 
@@ -41,3 +41,23 @@ class SearchResponse(BaseModel):
     results: list[SearchResult]
     answer: Optional[str] = None
     context: str = Field(..., description="Markdown formatted context")
+
+
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant", "system"]
+    content: str
+
+
+class ChatRequest(BaseModel):
+    provider: Literal["openai", "gemini", "claude"] = Field(
+        ..., description="LLM Provider"
+    )
+    model: str = Field(..., description="Model name for the provider")
+    api_key: str = Field(..., description="API Key for the provider")
+    history: list[ChatMessage] = Field(default_factory=list, description="Chat history")
+    query: str = Field(..., description="User's current query")
+    stream: bool = Field(False, description="Stream response")
+
+
+class ChatResponse(BaseModel):
+    response: str = Field(..., description="AI Response content")

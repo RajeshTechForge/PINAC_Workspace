@@ -7,11 +7,14 @@ requires-python = ">=3.11"
 dependencies = [
     "pip>=25.3",
     "fastapi>=0.115.0",
-    "crawl4ai>=0.4.0",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.6.0",
     "uvicorn>=0.40.0",
     "httpx>=0.28.1",
+    "langchain-core>=1.2.7",
+    "langchain-openai>=1.1.7",
+    "langchain-anthropic>=1.3.1",
+    "langchain-google-genai>=4.2.0",
 ]
 
 [dependency-groups]

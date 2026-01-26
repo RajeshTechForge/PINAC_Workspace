@@ -28,14 +28,11 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     if (!valueName || disabled) return;
 
     if (valueName === "provider") {
-      // User selected a provider by display name
       const provider = getProviderByDisplayName(option);
       if (provider) {
         modelSettings.setSelectedProvider(provider.id);
       }
     } else if (valueName === "model") {
-      // User selected a model by display name
-      // For dynamic providers, find the model from available models
       const availableModels = modelSettings.getAvailableModels(
         modelSettings.selectedProviderId,
       );
@@ -49,7 +46,6 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     setIsActive(false);
   };
 
-  // Initialize selected option based on current settings
   useEffect(() => {
     if (!valueName) return;
 

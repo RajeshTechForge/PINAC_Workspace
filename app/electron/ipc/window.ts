@@ -25,7 +25,6 @@ export const registerWindowHandlers = (mainWindow: BrowserWindow | null) => {
     if (mainWindow) {
       mainWindow.webContents.closeDevTools();
       mainWindow.hide();
-      // Force garbage collection of any resources
       if (global.gc) global.gc();
       mainWindow.destroy();
       if (process.platform !== "darwin") {

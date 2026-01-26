@@ -46,9 +46,6 @@ dmypy.json
 # Ruff
 .ruff_cache/
 
-# Crawl4AI cache
-.crawl4ai/
-
 # OS
 Thumbs.db
 

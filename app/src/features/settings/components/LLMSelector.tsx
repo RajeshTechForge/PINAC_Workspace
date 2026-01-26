@@ -8,16 +8,10 @@ import {
 
 export const LLMSelector: React.FC = () => {
   const modelSettings = useModelSettings();
-
-  // Get all provider display names from config
   const providerOptions = getProviderDisplayNames();
-
-  // Get current provider config
   const currentProvider = getProviderByDisplayName(
     modelSettings.getCurrentProviderName(),
   );
-
-  // Get models for current provider (handles dynamic providers like Ollama)
   const modelConfigs = currentProvider
     ? modelSettings.getAvailableModels(currentProvider.id)
     : [];
@@ -39,14 +33,16 @@ export const LLMSelector: React.FC = () => {
       />
 
       {/* Dropdown for selecting the model */}
-      <DropdownMenu
-        defaultOption={modelSettings.getCurrentModelName()}
-        optionList={modelOptions}
-        valueName="model"
-        disabled={
-          modelSettings.isLoadingOllamaModels || modelOptions.length === 0
-        }
-      />
+      {modelSettings.selectedProviderId !== "custom" && (
+        <DropdownMenu
+          defaultOption={modelSettings.getCurrentModelName()}
+          optionList={modelOptions}
+          valueName="model"
+          disabled={
+            modelSettings.isLoadingOllamaModels || modelOptions.length === 0
+          }
+        />
+      )}
 
       {/* Show status for Ollama */}
       {showOllamaStatus && (

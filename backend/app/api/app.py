@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="FastAPI server with web search capabilities using Crawl4AI",
+    description="FastAPI server for PINAC-Workspace backend services",
     lifespan=lifespan,
     debug=settings.debug,
 )

@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { LLMSelector } from "./components/LLMSelector";
 import { AdvancedSettings } from "./components/AdvancedSettings";
-import { DropdownMenu } from "./components/DropdownMenu";
-
 // Icons
 import { IoLogOutOutline } from "react-icons/io5";
 import { LuUpload } from "react-icons/lu";
@@ -213,15 +211,6 @@ export const Settings = () => {
             {/* ================================= */}
             <div className="w-full py-5 px-2 flex flex-col items-center">
               <AdvancedSettings />
-            </div>
-
-            {/*   Section 3 (Output Language)    */}
-            {/* ================================= */}
-            <div className="w-full py-5 px-2 flex flex-col items-center">
-              <div className="w-full text-lg pb-7 text-gray-200">
-                Output Language
-              </div>
-              <DropdownMenu defaultOption="English" optionList={["English"]} />
             </div>
           </div>
         )}

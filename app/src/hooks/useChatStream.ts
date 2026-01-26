@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { ChatStreamChunk } from "@/types";
 
 interface ChatStreamHandlers {
@@ -9,67 +9,64 @@ interface ChatStreamHandlers {
 
 interface UseChatStreamReturn {
   isListening: boolean;
+  registerHandlers: (handlers: ChatStreamHandlers) => void;
 }
 
-export const useChatStream = (
-  handlers: ChatStreamHandlers,
-): UseChatStreamReturn => {
-  const { onData, onError, onDone } = handlers;
+// Singleton pattern for IPC listener management
+const StreamListenerManager = {
+  handlers: null as ChatStreamHandlers | null,
+  initialized: false,
+
+  setHandlers(handlers: ChatStreamHandlers) {
+    this.handlers = handlers;
+  },
+
+  init() {
+    if (
+      this.initialized ||
+      typeof window === "undefined" ||
+      !window.ipcRenderer
+    ) {
+      return this.initialized;
+    }
+
+    window.ipcRenderer.on(
+      "chat-stream-data",
+      (_event: unknown, chunk: ChatStreamChunk) => {
+        this.handlers?.onData(chunk);
+      },
+    );
+
+    window.ipcRenderer.on(
+      "chat-stream-error",
+      (_event: unknown, error: string) => {
+        this.handlers?.onError(error);
+      },
+    );
+
+    window.ipcRenderer.on("chat-stream-done", () => {
+      this.handlers?.onDone();
+    });
+
+    this.initialized = true;
+    return true;
+  },
+};
+
+export const useChatStream = (): UseChatStreamReturn => {
   const isListeningRef = useRef(false);
 
-  // Use refs to avoid recreating listeners when callbacks change
-  const onDataRef = useRef(onData);
-  const onErrorRef = useRef(onError);
-  const onDoneRef = useRef(onDone);
-
-  // Update refs when callbacks change
-  useEffect(() => {
-    onDataRef.current = onData;
-    onErrorRef.current = onError;
-    onDoneRef.current = onDone;
-  }, [onData, onError, onDone]);
+  const registerHandlers = useCallback((handlers: ChatStreamHandlers) => {
+    StreamListenerManager.setHandlers(handlers);
+  }, []);
 
   useEffect(() => {
-    // Event handler wrappers that use current refs
-    const handleData = (_event: any, chunk: ChatStreamChunk) => {
-      onDataRef.current(chunk);
-    };
-
-    const handleError = (_event: any, error: string) => {
-      onErrorRef.current(error);
-    };
-
-    const handleDone = () => {
-      onDoneRef.current();
-    };
-
-    // Register IPC listeners
-    const removeDataListener = window.ipcRenderer.on(
-      "chat-stream-data",
-      handleData,
-    );
-    const removeErrorListener = window.ipcRenderer.on(
-      "chat-stream-error",
-      handleError,
-    );
-    const removeDoneListener = window.ipcRenderer.on(
-      "chat-stream-done",
-      handleDone,
-    );
-
-    isListeningRef.current = true;
-
-    // Cleanup function
-    return () => {
-      removeDataListener();
-      removeErrorListener();
-      removeDoneListener();
-      isListeningRef.current = false;
-    };
-  }, []); // Empty deps - listeners use refs that are always current
+    isListeningRef.current = StreamListenerManager.init();
+  }, []);
 
   return {
     isListening: isListeningRef.current,
+    registerHandlers,
   };
 };
 

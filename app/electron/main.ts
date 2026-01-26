@@ -8,40 +8,36 @@ import { registerUserHandlers } from "./ipc/user";
 import { registerFileHandlers } from "./ipc/file";
 import { registerWindowHandlers } from "./ipc/window";
 import { registerAiHandlers } from "./ipc/ai";
+import { registerSettingsHandlers } from "./ipc/settings";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 
 let mainWindow: BrowserWindow | null = null;
 
-// ====================================================== //
-//              Refactored Main Process                   //
-// ====================================================== //
-
 // Register IPC Handlers
 registerUserHandlers();
 registerFileHandlers();
 registerAiHandlers();
+registerSettingsHandlers();
 
 const initWindow = () => {
   mainWindow = createMainWindow(
     path.join(__dirname, "preload.js"),
     RENDERER_DIST,
-    VITE_DEV_SERVER_URL
+    VITE_DEV_SERVER_URL,
   );
-  
-  // Register handlers that need the window instance
-  registerAuthHandlers(mainWindow);
+
+  // Register handlers that need window instance
+  registerAuthHandlers();
   registerWindowHandlers(mainWindow);
 };
 
-// Quit when all windows are closed, except on macOS.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -57,7 +53,7 @@ app.on("activate", () => {
 
 app.whenReady().then(async () => {
   initWindow();
-  
+
   // Protocol Handling (Deep Links)
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
@@ -68,10 +64,7 @@ app.whenReady().then(async () => {
   } else {
     app.setAsDefaultProtocolClient("pinac-workspace");
   }
-
-
 });
-
 
 // Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();
@@ -90,7 +83,7 @@ if (!gotTheLock) {
     } else {
       dialog.showErrorBox(
         "Error",
-        "Something went wrong, unable to authenticate. Please try again."
+        "Something went wrong, unable to authenticate. Please try again.",
       );
     }
   });
