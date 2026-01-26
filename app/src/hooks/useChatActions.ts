@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { useChatContext } from "@/contexts/ChatContext";
 import { useModelSettings } from "@/contexts/ModelSettingsContext";
 import { useAttachmentContext } from "@/contexts/AttachmentContext";
@@ -18,16 +18,17 @@ interface UseChatActionsReturn {
 }
 
 const generateSessionId = (): string => {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+};
+
+const extractMessageId = (id: string): number => {
+  return parseInt(id.split("_")[1], 10) || 0;
 };
 
 const convertToApiMessages = (messages: UIMessage[]): Message[] => {
   return messages
     .filter((msg) => msg.role === "user" || msg.role === "assistant")
-    .map((msg) => ({
-      role: msg.role,
-      content: msg.content,
-    }));
+    .map(({ role, content }) => ({ role, content }));
 };
 
 export const useChatActions = (): UseChatActionsReturn => {
@@ -39,6 +40,18 @@ export const useChatActions = (): UseChatActionsReturn => {
   // Track the currently streaming message ID
   const streamingMessageRef = useRef<string | null>(null);
   const streamingContentRef = useRef<string>("");
+
+  // Store stable references to context functions
+  const chatRef = useRef(chat);
+  const uiRef = useRef(ui);
+  const modelSettingsRef = useRef(modelSettings);
+
+  // Update refs when context changes
+  useEffect(() => {
+    chatRef.current = chat;
+    uiRef.current = ui;
+    modelSettingsRef.current = modelSettings;
+  }, [chat, ui, modelSettings]);
 
   const saveMessageToDatabase = useCallback(
     async (
@@ -74,24 +87,22 @@ export const useChatActions = (): UseChatActionsReturn => {
       if (!streamingMessageRef.current || !chunk.content) return;
 
       streamingContentRef.current += chunk.content;
-      chat.updateMessage(streamingMessageRef.current, {
+      chatRef.current.updateMessage(streamingMessageRef.current, {
         content: streamingContentRef.current,
         isStreaming: !chunk.done,
       });
     },
-    [chat],
+    [], // No dependencies - uses refs
   );
 
   const handleStreamDone = useCallback(async () => {
     if (!streamingMessageRef.current) return;
 
-    const messageId = parseInt(
-      streamingMessageRef.current.split("_")[1] || "0",
-    );
+    const messageId = extractMessageId(streamingMessageRef.current);
     const content = streamingContentRef.current;
-    const modelName = modelSettings.getCurrentModelName();
+    const modelName = modelSettingsRef.current.getCurrentModelName();
 
-    chat.updateMessage(streamingMessageRef.current, {
+    chatRef.current.updateMessage(streamingMessageRef.current, {
       isStreaming: false,
     });
 
@@ -100,9 +111,9 @@ export const useChatActions = (): UseChatActionsReturn => {
     // Reset state
     streamingMessageRef.current = null;
     streamingContentRef.current = "";
-    ui.setInputDisabled(false);
-    chat.setIsStreaming(false);
-  }, [chat, modelSettings, ui, saveMessageToDatabase]);
+    uiRef.current.setInputDisabled(false);
+    chatRef.current.setIsStreaming(false);
+  }, [saveMessageToDatabase]); // Only saveMessageToDatabase as dependency
 
   const handleStreamError = useCallback(
     (error: string) => {
@@ -110,7 +121,7 @@ export const useChatActions = (): UseChatActionsReturn => {
 
       const errorMessage = `**Error:** ${error}\n\nPlease try again.`;
 
-      chat.updateMessage(streamingMessageRef.current, {
+      chatRef.current.updateMessage(streamingMessageRef.current, {
         content: errorMessage,
         isStreaming: false,
       });
@@ -118,18 +129,23 @@ export const useChatActions = (): UseChatActionsReturn => {
       // Reset state
       streamingMessageRef.current = null;
       streamingContentRef.current = "";
-      ui.setInputDisabled(false);
-      chat.setIsStreaming(false);
+      uiRef.current.setInputDisabled(false);
+      chatRef.current.setIsStreaming(false);
     },
-    [chat, ui],
+    [], // No dependencies - uses refs
   );
 
-  // Set up IPC stream listeners
-  useChatStream({
-    onData: handleStreamData,
-    onError: handleStreamError,
-    onDone: handleStreamDone,
-  });
+  // Set up IPC stream listeners - register handlers for this instance
+  const { registerHandlers } = useChatStream();
+
+  // Register handlers once on mount
+  useEffect(() => {
+    registerHandlers({
+      onData: handleStreamData,
+      onError: handleStreamError,
+      onDone: handleStreamDone,
+    });
+  }, [registerHandlers, handleStreamData, handleStreamError, handleStreamDone]);
 
   // Send a message to the AI
   const sendMessage = useCallback(
@@ -156,7 +172,7 @@ export const useChatActions = (): UseChatActionsReturn => {
         attachmentName,
       });
 
-      const userMessageId = parseInt(userMessage.id.split("_")[1] || "0");
+      const userMessageId = extractMessageId(userMessage.id);
       await saveMessageToDatabase(
         userMessageId,
         "user",
@@ -213,9 +229,7 @@ export const useChatActions = (): UseChatActionsReturn => {
     // Stop the stream
     await stopChatStream();
 
-    const messageId = parseInt(
-      streamingMessageRef.current.split("_")[1] || "0",
-    );
+    const messageId = extractMessageId(streamingMessageRef.current);
     const partialContent =
       streamingContentRef.current || "[Generation stopped]";
     const modelName = modelSettings.getCurrentModelName();
