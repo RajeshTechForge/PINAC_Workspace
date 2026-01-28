@@ -11,6 +11,8 @@ export const Settings = () => {
   const [nickname, setNickname] = useState<string>("");
   const [emailId, setEmailId] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [tavilyApiKey, setTavilyApiKey] = useState<string>("");
+  const [tavilySaveStatus, setTavilySaveStatus] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"app settings" | "profile">(
     "profile",
   );
@@ -29,6 +31,27 @@ export const Settings = () => {
     });
   };
 
+  const saveTavilyApiKey = async () => {
+    setTavilySaveStatus("Saving...");
+    try {
+      if (window.ipcRenderer) {
+        const result = await window.ipcRenderer.invoke(
+          "save-tavily-api-key",
+          tavilyApiKey,
+        );
+        if (result.success) {
+          setTavilySaveStatus("Saved!");
+        } else {
+          setTavilySaveStatus("Error!");
+        }
+      }
+    } catch (error) {
+      setTavilySaveStatus("Error!");
+      console.error(error);
+    }
+    setTimeout(() => setTavilySaveStatus(""), 2000);
+  };
+
   // Load user data on switching to this page
   useEffect(() => {
     window.ipcRenderer.send("get-user-info");
@@ -38,6 +61,16 @@ export const Settings = () => {
       setEmailId(response.email || "");
       setImageUrl(response.photoURL || null);
     });
+
+    // Load Tavily API key
+    if (window.ipcRenderer) {
+      window.ipcRenderer
+        .invoke("get-tavily-api-key")
+        .then((key: string) => setTavilyApiKey(key || ""))
+        .catch((err: any) =>
+          console.error("Failed to load Tavily API key:", err),
+        );
+    }
   }, []);
 
   return (
@@ -211,6 +244,48 @@ export const Settings = () => {
             {/* ================================= */}
             <div className="w-full py-5 px-2 flex flex-col items-center">
               <AdvancedSettings />
+            </div>
+
+            {/*   Section 3 (Tavily API Key)  */}
+            {/* ============================== */}
+            <div className="w-full py-5 px-2 flex flex-col items-center">
+              <div className="w-full flex flex-col gap-4 p-4 bg-gray-800 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-200">
+                  Web Search Settings
+                </h3>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-gray-300">
+                    Tavily API Key
+                  </label>
+                  <input
+                    type="password"
+                    className="w-full h-9 px-2 rounded-lg bg-gray-700 dark:bg-tertiary-dark text-gray-200 outline-none"
+                    value={tavilyApiKey}
+                    onChange={(e) => setTavilyApiKey(e.target.value)}
+                    placeholder="Enter Tavily API Key"
+                  />
+                  <p className="text-xs text-gray-400">
+                    Required for web search functionality. Get your key from{" "}
+                    <a
+                      href="https://tavily.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      tavily.com
+                    </a>
+                  </p>
+                </div>
+                <button
+                  onClick={saveTavilyApiKey}
+                  className={`mt-2 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium
+                    ${tavilySaveStatus === "Saved!" ? "bg-green-600 hover:bg-green-700" : ""}
+                    ${tavilySaveStatus === "Error!" ? "bg-red-600 hover:bg-red-700" : ""}
+                  `}
+                >
+                  {tavilySaveStatus || "Save API Key"}
+                </button>
+              </div>
             </div>
           </div>
         )}

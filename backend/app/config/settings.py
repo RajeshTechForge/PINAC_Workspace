@@ -5,20 +5,23 @@ from typing import Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(Path(__file__).resolve().parents[3] / ".env"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
 
     # Application Settings
-    app_name: str = Field(default="Pinac Workspace Backend", description="Application name")
+    app_name: str = Field(
+        default="Pinac Workspace Backend", description="Application name"
+    )
     app_version: str = Field(default="3.0.1", description="Application version")
     environment: Literal["development", "staging", "production"] = Field(
         default="development", description="Current environment"
@@ -54,7 +57,9 @@ class Settings(BaseSettings):
     def model_post_init(self, __context) -> None:
         """Parse allowed_origins after model initialization."""
         self._allowed_origins_list = [
-            origin.strip() for origin in self.allowed_origins.split(",") if origin.strip()
+            origin.strip()
+            for origin in self.allowed_origins.split(",")
+            if origin.strip()
         ]
 
     @property

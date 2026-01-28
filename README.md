@@ -28,11 +28,11 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 
 - **Total Freedom:** Choose between local (Ollama) and Cloud AI models (using API keys) to suit your workflow and privacy needs.
 - **Privacy by Design:** No personal data is ever shared or stored on our servers. All features work fully offline, ensuring your data stays on your device.
+- **Real-Time Web Search:** Instantly access up-to-date information from the web to answer questions and enhance conversations.
 - **Local Chat History:** All conversations are stored locally for your privacy and convenience. Easily revisit and refine past chats.
 - **Modern Desktop Experience:** Enjoy a sleek, responsive UI built with Electron and React, powered by a robust Python backend.
 
 <!-- - **Local RAG Integration:** Attach documents directly in chat and leverage a lightweight, local Retrieval-Augmented Generation (RAG) model. Optionally, plug in your own RAG model for advanced use cases.
-- **Real-Time Web Search:** Instantly access up-to-date information from the web to answer questions and enhance conversations.
 - **Secure Authentication:** Sign in and out securely with Firebase Authentication, protecting your identity and access. -->
 
 
@@ -62,9 +62,13 @@ PINAC Workspace's python backend utilizes [uv](https://github.com/astral-sh/uv) 
    # install all backend and frontend dependencies
    npm run install:all
 
+   # Create a `.env` file based on example
+   # no need to modify .env, no changes required
+   cp .env.example .env
+
    ```
 
-3. Lunch the App
+3. Launch the App
 
    ```bash
    npm run dev

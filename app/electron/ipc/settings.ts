@@ -31,4 +31,31 @@ export const registerSettingsHandlers = () => {
       return null;
     }
   });
+
+  // Tavily API Key handlers
+  ipcMain.handle("save-tavily-api-key", async (_, apiKey: string) => {
+    try {
+      const masterKey = SecureMasterKeyManager.getPersistentMasterKey();
+      const tokenManager = new SecureTokenManager(masterKey);
+
+      tokenManager.storeToken("tavily_api_key", apiKey);
+      return { success: true };
+    } catch (error: any) {
+      console.error("Failed to save Tavily API key:", error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle("get-tavily-api-key", async () => {
+    try {
+      const masterKey = SecureMasterKeyManager.getPersistentMasterKey();
+      const tokenManager = new SecureTokenManager(masterKey);
+
+      const apiKey = tokenManager.retrieveToken("tavily_api_key");
+      return apiKey || "";
+    } catch (error) {
+      console.error("Failed to get Tavily API key:", error);
+      return "";
+    }
+  });
 };
