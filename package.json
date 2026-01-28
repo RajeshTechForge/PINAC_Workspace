@@ -1,0 +1,15 @@
+{
+    "name": "pinac-workspace-root",
+    "version": "3.0.0",
+    "description": "Root package for Pinac Workspace",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently --kill-others --names \"BACKEND,FRONTEND\" --prefix-colors \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:backend": "cd backend && uv run main.py",
+        "dev:frontend": "cd app && npm run dev",
+        "install:all": "cd app && npm install && cd ../backend && uv sync && uv pip install -e ."
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    }
+}

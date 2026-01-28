@@ -14,7 +14,7 @@ A privacy-first, cross-platform, open-source desktop AI assistant for all
 
 <br>
 
-![](https://skillicons.dev/icons?i=react,tailwindcss,typescript,vite,electron,python)
+![](https://skillicons.dev/icons?i=react,tailwindcss,typescript,vite,electron,python,fastapi)
 
 </div>
 
@@ -24,14 +24,28 @@ A privacy-first, cross-platform, open-source desktop AI assistant for all
 
 PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamlessly blending Electron-React for a modern user experience with powerfully Python backend. Unlock the full potential of AI with unparalleled simplicity and user-friendliness, while enjoying ultimate freedom and privacy.
 
+## ✨ Features
+
+- **Total Freedom:** Choose between local (Ollama) and Cloud AI models (using API keys) to suit your workflow and privacy needs.
+- **Privacy by Design:** No personal data is ever shared or stored on our servers. All features work fully offline, ensuring your data stays on your device.
+- **Local Chat History:** All conversations are stored locally for your privacy and convenience. Easily revisit and refine past chats.
+- **Modern Desktop Experience:** Enjoy a sleek, responsive UI built with Electron and React, powered by a robust Python backend.
+
+<!-- - **Local RAG Integration:** Attach documents directly in chat and leverage a lightweight, local Retrieval-Augmented Generation (RAG) model. Optionally, plug in your own RAG model for advanced use cases.
+- **Real-Time Web Search:** Instantly access up-to-date information from the web to answer questions and enhance conversations.
+- **Secure Authentication:** Sign in and out securely with Firebase Authentication, protecting your identity and access. -->
+
+
 ## 🛹 UI-Design
 
 <img src="https://github.com/RajeshTechForge/pinac_workspace/blob/main/assets/UI-Design.png" alt="app screenshot">
 
 ## 🚀 Getting Started
 
+PINAC Workspace's python backend utilizes [uv](https://github.com/astral-sh/uv) for high-speed dependency resolution.
+
 > [!NOTE]  
-> We are changing the backend from Flask to FastAPI for better performance and scalability. The new backend is under development and will be available soon.
+> Make sure your Ollama is running for using local AI models.
 
 1. Clone the Repository
 
@@ -41,30 +55,34 @@ PINAC Workspace is a modern-looking _privacy-first_ AI chat for desktops, seamle
 
    ```
 
-2. Install Dependencies & Launch
+2. Install all dependencies
 
    ```bash
    npm install
-   npm run dev
+   # install all backend and frontend dependencies
+   npm run install:all
 
    ```
 
+3. Lunch the App
 
-## 🎉 Contributing
+   ```bash
+   npm run dev
+   # this will start both fast-api backend and
+   # electron app at once
+   ```
 
-We highly welcome contributions! Please follow the steps if you're interested.
 
-1. Star this repository
-2. Fork the repository on GitHub.
-3. Clone the project to your machine.
-4. Create your own branch.
-5. Commit changes to your branch.
-6. Push your work back up to your fork.
-7. Submit a Pull request so that we can review your changes
+## 🤝 Contributing
+
+We love contributors! Whether you are fixing a bug or suggesting a feature.  
+Check out [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
 
 ## 📄 License
 
-PINAC Workspace is licensed under the **MIT license**. See the <a href="https://github.com/RajeshTechForge/pinac_workspace/blob/main/LICENSE">LICENSE</a> file for more details.
+Distributed under the **MIT license**. See [LICENSE](LICENSE) for more information.
+
 
 ## 🌏 Contributors
 
@@ -73,3 +91,9 @@ Thanks to our contributors, we have received huge support from the open-source c
 <a href="https://github.com/RajeshTechForge/pinac_workspace/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=RajeshTechForge/pinac_workspace" />
 </a>
+
+---
+
+<div align="center">
+<p>Built with ❤️ for a better AI future by @RajeshTechForge</p>
+</div>
